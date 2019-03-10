@@ -22,8 +22,8 @@ theme = "hugo-tranquilpeak-theme"
 disqusShortname = "davidemagno"
 # googleAnalytics = "UA-123-45"
 paginate = 4
-# canonifyurls = true
-uglyURLs = true
+canonifyurls = true
+# uglyURLs = true
 
 
 [permalinks]

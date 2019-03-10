@@ -2,7 +2,7 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Fx on The CuRious Financial Risk ManageR</title>
-    <link>/tags/fx.html</link>
+    <link>/tags/fx/</link>
     <description>Recent content in Fx on The CuRious Financial Risk ManageR</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
@@ -13,10 +13,10 @@
     
     <item>
       <title>Convert foreign currency valuations</title>
-      <link>/2018/02/convert-foreign-currency-valuations.html</link>
+      <link>/2018/02/convert-foreign-currency-valuations/</link>
       <pubDate>Wed, 14 Feb 2018 00:00:00 +0000</pubDate>
       
-      <guid>/2018/02/convert-foreign-currency-valuations.html</guid>
+      <guid>/2018/02/convert-foreign-currency-valuations/</guid>
       <description>
 
 
