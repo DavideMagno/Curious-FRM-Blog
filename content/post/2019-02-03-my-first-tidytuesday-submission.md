@@ -8,7 +8,6 @@ categories:
 tags:
   - TidyTuesday
   - Coding
-  - R
   - Submission
   - Twitter
   - Community

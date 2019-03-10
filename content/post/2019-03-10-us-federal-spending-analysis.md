@@ -7,7 +7,6 @@ categories:
   - TidyTuesday
 tags:
   - Coding
-  - R
   - Economics
   - TidyTuesday
   - Twitter

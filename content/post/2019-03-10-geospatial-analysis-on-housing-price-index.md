@@ -10,7 +10,6 @@ tags:
   - Twitter
   - Economics
   - Coding
-  - R
 keywords:
   - tech
 ---
