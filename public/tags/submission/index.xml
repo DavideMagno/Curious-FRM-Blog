@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Submission on The CuRious Financial Risk ManageR</title>
-    <link>/tags/submission/</link>
+    <link>https://example.org/tags/submission/</link>
     <description>Recent content in Submission on The CuRious Financial Risk ManageR</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Sun, 03 Feb 2019 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="/tags/submission/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://example.org/tags/submission/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>My First #TidyTuesday Submission</title>
-      <link>/2019/02/my-first-tidytuesday-submission/</link>
+      <link>https://example.org/2019/02/my-first-tidytuesday-submission/</link>
       <pubDate>Sun, 03 Feb 2019 00:00:00 +0000</pubDate>
       
-      <guid>/2019/02/my-first-tidytuesday-submission/</guid>
+      <guid>https://example.org/2019/02/my-first-tidytuesday-submission/</guid>
       <description>Finally my first #TidyTuesday submission! 🎊🎉I am starting from week 1 2019 but I will catch up soon😉When do people submit their visualisations?Mostly on Tuesday and Wednesday afternoon, but also on Monday before the new set is released #rstats #ggplot @rstats4ds @thomas_mock pic.twitter.com/pKZAyL8vp1
 &amp;mdash; Davide Magno (@DavideMagno) February 3, 2019  </description>
     </item>

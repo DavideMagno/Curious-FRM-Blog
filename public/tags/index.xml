@@ -2,111 +2,111 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on The CuRious Financial Risk ManageR</title>
-    <link>/tags/</link>
+    <link>https://example.org/tags/</link>
     <description>Recent content in Tags on The CuRious Financial Risk ManageR</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Mon, 11 Feb 2019 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://example.org/tags/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Coding</title>
-      <link>/tags/coding/</link>
+      <link>https://example.org/tags/coding/</link>
       <pubDate>Mon, 11 Feb 2019 00:00:00 +0000</pubDate>
       
-      <guid>/tags/coding/</guid>
+      <guid>https://example.org/tags/coding/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Community</title>
-      <link>/tags/community/</link>
+      <link>https://example.org/tags/community/</link>
       <pubDate>Sun, 03 Feb 2019 00:00:00 +0000</pubDate>
       
-      <guid>/tags/community/</guid>
+      <guid>https://example.org/tags/community/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Density</title>
-      <link>/tags/density/</link>
+      <link>https://example.org/tags/density/</link>
       <pubDate>Mon, 29 Jan 2018 00:00:00 +0000</pubDate>
       
-      <guid>/tags/density/</guid>
+      <guid>https://example.org/tags/density/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Economics</title>
-      <link>/tags/economics/</link>
+      <link>https://example.org/tags/economics/</link>
       <pubDate>Mon, 11 Feb 2019 00:00:00 +0000</pubDate>
       
-      <guid>/tags/economics/</guid>
+      <guid>https://example.org/tags/economics/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Equity</title>
-      <link>/tags/equity/</link>
+      <link>https://example.org/tags/equity/</link>
       <pubDate>Mon, 29 Jan 2018 00:00:00 +0000</pubDate>
       
-      <guid>/tags/equity/</guid>
+      <guid>https://example.org/tags/equity/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Fx</title>
-      <link>/tags/fx/</link>
+      <link>https://example.org/tags/fx/</link>
       <pubDate>Wed, 14 Feb 2018 00:00:00 +0000</pubDate>
       
-      <guid>/tags/fx/</guid>
+      <guid>https://example.org/tags/fx/</guid>
       <description></description>
     </item>
     
     <item>
       <title>R</title>
-      <link>/tags/r/</link>
+      <link>https://example.org/tags/r/</link>
       <pubDate>Mon, 11 Feb 2019 00:00:00 +0000</pubDate>
       
-      <guid>/tags/r/</guid>
+      <guid>https://example.org/tags/r/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Simulations</title>
-      <link>/tags/simulations/</link>
+      <link>https://example.org/tags/simulations/</link>
       <pubDate>Mon, 29 Jan 2018 00:00:00 +0000</pubDate>
       
-      <guid>/tags/simulations/</guid>
+      <guid>https://example.org/tags/simulations/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Submission</title>
-      <link>/tags/submission/</link>
+      <link>https://example.org/tags/submission/</link>
       <pubDate>Sun, 03 Feb 2019 00:00:00 +0000</pubDate>
       
-      <guid>/tags/submission/</guid>
+      <guid>https://example.org/tags/submission/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Tidytuesday</title>
-      <link>/tags/tidytuesday/</link>
+      <link>https://example.org/tags/tidytuesday/</link>
       <pubDate>Mon, 11 Feb 2019 00:00:00 +0000</pubDate>
       
-      <guid>/tags/tidytuesday/</guid>
+      <guid>https://example.org/tags/tidytuesday/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Twitter</title>
-      <link>/tags/twitter/</link>
+      <link>https://example.org/tags/twitter/</link>
       <pubDate>Mon, 11 Feb 2019 00:00:00 +0000</pubDate>
       
-      <guid>/tags/twitter/</guid>
+      <guid>https://example.org/tags/twitter/</guid>
       <description></description>
     </item>
     
