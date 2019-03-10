@@ -2,7 +2,7 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Simulations on The CuRious Financial Risk ManageR</title>
-    <link>/tags/simulations/</link>
+    <link>/tags/simulations.html</link>
     <description>Recent content in Simulations on The CuRious Financial Risk ManageR</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
@@ -13,10 +13,10 @@
     
     <item>
       <title>Generate scenarios correlated to existing ones</title>
-      <link>/2018/01/generate-scenarios-correlated-to-existing-ones/</link>
+      <link>/2018/01/generate-scenarios-correlated-to-existing-ones.html</link>
       <pubDate>Mon, 29 Jan 2018 00:00:00 +0000</pubDate>
       
-      <guid>/2018/01/generate-scenarios-correlated-to-existing-ones/</guid>
+      <guid>/2018/01/generate-scenarios-correlated-to-existing-ones.html</guid>
       <description>
 
 

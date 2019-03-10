@@ -2,7 +2,7 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>R on The CuRious Financial Risk ManageR</title>
-    <link>/tags/r/</link>
+    <link>/tags/r.html</link>
     <description>Recent content in R on The CuRious Financial Risk ManageR</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
@@ -13,10 +13,10 @@
     
     <item>
       <title>Convert foreign currency valuations</title>
-      <link>/2018/02/convert-foreign-currency-valuations/</link>
+      <link>/2018/02/convert-foreign-currency-valuations.html</link>
       <pubDate>Wed, 14 Feb 2018 00:00:00 +0000</pubDate>
       
-      <guid>/2018/02/convert-foreign-currency-valuations/</guid>
+      <guid>/2018/02/convert-foreign-currency-valuations.html</guid>
       <description>
 
 
@@ -98,10 +98,10 @@ Investments&lt;/code&gt;&lt;/pre&gt;
     
     <item>
       <title>Generate scenarios correlated to existing ones</title>
-      <link>/2018/01/generate-scenarios-correlated-to-existing-ones/</link>
+      <link>/2018/01/generate-scenarios-correlated-to-existing-ones.html</link>
       <pubDate>Mon, 29 Jan 2018 00:00:00 +0000</pubDate>
       
-      <guid>/2018/01/generate-scenarios-correlated-to-existing-ones/</guid>
+      <guid>/2018/01/generate-scenarios-correlated-to-existing-ones.html</guid>
       <description>
 
 

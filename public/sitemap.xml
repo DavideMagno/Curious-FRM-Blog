@@ -3,108 +3,108 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>/2019/02/us-federal-spending-analysis/</loc>
+    <loc>/2019/02/us-federal-spending-analysis.html</loc>
     <lastmod>2019-02-11T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>/2019/02/geospatial-analysis-on-housing-price-index/</loc>
+    <loc>/2019/02/geospatial-analysis-on-housing-price-index.html</loc>
     <lastmod>2019-02-10T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>/2019/02/my-first-tidytuesday-submission/</loc>
+    <loc>/2019/02/my-first-tidytuesday-submission.html</loc>
     <lastmod>2019-02-03T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>/2018/02/convert-foreign-currency-valuations/</loc>
+    <loc>/2018/02/convert-foreign-currency-valuations.html</loc>
     <lastmod>2018-02-14T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>/2018/01/generate-scenarios-correlated-to-existing-ones/</loc>
+    <loc>/2018/01/generate-scenarios-correlated-to-existing-ones.html</loc>
     <lastmod>2018-01-29T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>/archives/</loc>
+    <loc>/archives.html</loc>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/categories/</loc>
+    <loc>/categories.html</loc>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/tags/coding/</loc>
+    <loc>/tags/coding.html</loc>
     <lastmod>2019-02-11T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/tags/community/</loc>
+    <loc>/tags/community.html</loc>
     <lastmod>2019-02-03T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/tags/density/</loc>
+    <loc>/tags/density.html</loc>
     <lastmod>2018-01-29T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/tags/economics/</loc>
+    <loc>/tags/economics.html</loc>
     <lastmod>2019-02-11T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/tags/equity/</loc>
+    <loc>/tags/equity.html</loc>
     <lastmod>2018-01-29T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/categories/finance/</loc>
+    <loc>/categories/finance.html</loc>
     <lastmod>2018-02-14T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/tags/fx/</loc>
+    <loc>/tags/fx.html</loc>
     <lastmod>2018-02-14T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/post/</loc>
+    <loc>/post.html</loc>
     <lastmod>2019-02-11T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/tags/r/</loc>
+    <loc>/tags/r.html</loc>
     <lastmod>2018-02-14T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/tags/simulations/</loc>
+    <loc>/tags/simulations.html</loc>
     <lastmod>2018-01-29T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/tags/submission/</loc>
+    <loc>/tags/submission.html</loc>
     <lastmod>2019-02-03T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/tags/</loc>
+    <loc>/tags.html</loc>
     <lastmod>2019-02-11T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
@@ -116,19 +116,19 @@
   </url>
   
   <url>
-    <loc>/tags/tidytuesday/</loc>
+    <loc>/categories/tidytuesday.html</loc>
     <lastmod>2019-02-11T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/categories/tidytuesday/</loc>
+    <loc>/tags/tidytuesday.html</loc>
     <lastmod>2019-02-11T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/tags/twitter/</loc>
+    <loc>/tags/twitter.html</loc>
     <lastmod>2019-02-11T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>

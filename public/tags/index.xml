@@ -2,7 +2,7 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on The CuRious Financial Risk ManageR</title>
-    <link>/tags/</link>
+    <link>/tags.html</link>
     <description>Recent content in Tags on The CuRious Financial Risk ManageR</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
@@ -13,100 +13,100 @@
     
     <item>
       <title>Coding</title>
-      <link>/tags/coding/</link>
+      <link>/tags/coding.html</link>
       <pubDate>Mon, 11 Feb 2019 00:00:00 +0000</pubDate>
       
-      <guid>/tags/coding/</guid>
+      <guid>/tags/coding.html</guid>
       <description></description>
     </item>
     
     <item>
       <title>Community</title>
-      <link>/tags/community/</link>
+      <link>/tags/community.html</link>
       <pubDate>Sun, 03 Feb 2019 00:00:00 +0000</pubDate>
       
-      <guid>/tags/community/</guid>
+      <guid>/tags/community.html</guid>
       <description></description>
     </item>
     
     <item>
       <title>Density</title>
-      <link>/tags/density/</link>
+      <link>/tags/density.html</link>
       <pubDate>Mon, 29 Jan 2018 00:00:00 +0000</pubDate>
       
-      <guid>/tags/density/</guid>
+      <guid>/tags/density.html</guid>
       <description></description>
     </item>
     
     <item>
       <title>Economics</title>
-      <link>/tags/economics/</link>
+      <link>/tags/economics.html</link>
       <pubDate>Mon, 11 Feb 2019 00:00:00 +0000</pubDate>
       
-      <guid>/tags/economics/</guid>
+      <guid>/tags/economics.html</guid>
       <description></description>
     </item>
     
     <item>
       <title>Equity</title>
-      <link>/tags/equity/</link>
+      <link>/tags/equity.html</link>
       <pubDate>Mon, 29 Jan 2018 00:00:00 +0000</pubDate>
       
-      <guid>/tags/equity/</guid>
+      <guid>/tags/equity.html</guid>
       <description></description>
     </item>
     
     <item>
       <title>Fx</title>
-      <link>/tags/fx/</link>
+      <link>/tags/fx.html</link>
       <pubDate>Wed, 14 Feb 2018 00:00:00 +0000</pubDate>
       
-      <guid>/tags/fx/</guid>
+      <guid>/tags/fx.html</guid>
       <description></description>
     </item>
     
     <item>
       <title>R</title>
-      <link>/tags/r/</link>
+      <link>/tags/r.html</link>
       <pubDate>Wed, 14 Feb 2018 00:00:00 +0000</pubDate>
       
-      <guid>/tags/r/</guid>
+      <guid>/tags/r.html</guid>
       <description></description>
     </item>
     
     <item>
       <title>Simulations</title>
-      <link>/tags/simulations/</link>
+      <link>/tags/simulations.html</link>
       <pubDate>Mon, 29 Jan 2018 00:00:00 +0000</pubDate>
       
-      <guid>/tags/simulations/</guid>
+      <guid>/tags/simulations.html</guid>
       <description></description>
     </item>
     
     <item>
       <title>Submission</title>
-      <link>/tags/submission/</link>
+      <link>/tags/submission.html</link>
       <pubDate>Sun, 03 Feb 2019 00:00:00 +0000</pubDate>
       
-      <guid>/tags/submission/</guid>
+      <guid>/tags/submission.html</guid>
       <description></description>
     </item>
     
     <item>
       <title>Tidytuesday</title>
-      <link>/tags/tidytuesday/</link>
+      <link>/tags/tidytuesday.html</link>
       <pubDate>Mon, 11 Feb 2019 00:00:00 +0000</pubDate>
       
-      <guid>/tags/tidytuesday/</guid>
+      <guid>/tags/tidytuesday.html</guid>
       <description></description>
     </item>
     
     <item>
       <title>Twitter</title>
-      <link>/tags/twitter/</link>
+      <link>/tags/twitter.html</link>
       <pubDate>Mon, 11 Feb 2019 00:00:00 +0000</pubDate>
       
-      <guid>/tags/twitter/</guid>
+      <guid>/tags/twitter.html</guid>
       <description></description>
     </item>
     

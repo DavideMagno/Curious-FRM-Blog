@@ -2,7 +2,7 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Categories on The CuRious Financial Risk ManageR</title>
-    <link>/categories/</link>
+    <link>/categories.html</link>
     <description>Recent content in Categories on The CuRious Financial Risk ManageR</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
@@ -12,19 +12,19 @@
     
     <item>
       <title>Finance</title>
-      <link>/categories/finance/</link>
+      <link>/categories/finance.html</link>
       <pubDate>Wed, 14 Feb 2018 00:00:00 +0000</pubDate>
       
-      <guid>/categories/finance/</guid>
+      <guid>/categories/finance.html</guid>
       <description></description>
     </item>
     
     <item>
       <title>Tidytuesday</title>
-      <link>/categories/tidytuesday/</link>
+      <link>/categories/tidytuesday.html</link>
       <pubDate>Mon, 11 Feb 2019 00:00:00 +0000</pubDate>
       
-      <guid>/categories/tidytuesday/</guid>
+      <guid>/categories/tidytuesday.html</guid>
       <description></description>
     </item>
     
