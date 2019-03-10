@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Finance on The CuRious Financial Risk ManageR</title>
+    <link>/categories/finance/</link>
+    <description>Recent content in Finance on The CuRious Financial Risk ManageR</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 14 Feb 2018 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/categories/finance/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Convert foreign currency valuations</title>
+      <link>/2018/02/convert-foreign-currency-valuations/</link>
+      <pubDate>Wed, 14 Feb 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/2018/02/convert-foreign-currency-valuations/</guid>
+      <description>One of the most common problems when dealign with financial data is to have assets (or liabilities) denominated in a currency that is different from the domestic one.
+I propose a tidy solution to this problem that involves no use of for cycles.
+The principle of the solution is that converting each currency can be done in parallel using the map function while the consolidation of the results will be done using the reduce logic.</description>
+    </item>
+    
+    <item>
+      <title>Generate scenarios correlated to existing ones</title>
+      <link>/2018/01/generate-scenarios-correlated-to-existing-ones/</link>
+      <pubDate>Mon, 29 Jan 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/2018/01/generate-scenarios-correlated-to-existing-ones/</guid>
+      <description>In quantitative finance we often look at simulations of some market risk factors like equity returns or interest rate changes.
+There are many third party companies who specialize in the historical calibration of such variables and provide simulations of future expected outcomes to the companies who require them.
+For example, let’s suppose that we receive the expected returns of the Google shares as per the following distribution
+# This modelling is given by the third party and in theory we don&amp;#39;t know it google &amp;lt;- rnorm(10000, mean = 0.</description>
+    </item>
+    
+  </channel>
+</rss>

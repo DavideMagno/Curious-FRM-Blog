@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Hugo 0.54.0 with theme Tranquilpeak 0.4.3-SNAPSHOT">
+<meta name="author" content="Davide Magno">
+<meta name="keywords" content="">
+<meta name="description" content="One of the most common problems when dealign with financial data is to have assets (or liabilities) denominated in a currency that is different from the domestic one.
+I propose a tidy solution to this problem that involves no use of for cycles.
+The principle of the solution is that converting each currency can be done in parallel using the map function while the consolidation of the results will be done using the reduce logic.">
+
+
+<meta property="og:description" content="One of the most common problems when dealign with financial data is to have assets (or liabilities) denominated in a currency that is different from the domestic one.
+I propose a tidy solution to this problem that involves no use of for cycles.
+The principle of the solution is that converting each currency can be done in parallel using the map function while the consolidation of the results will be done using the reduce logic.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Convert foreign currency valuations">
+<meta name="twitter:title" content="Convert foreign currency valuations">
+<meta property="og:url" content="/2018/02/convert-foreign-currency-valuations/">
+<meta property="twitter:url" content="/2018/02/convert-foreign-currency-valuations/">
+<meta property="og:site_name" content="The CuRious Financial Risk ManageR">
+<meta property="og:description" content="One of the most common problems when dealign with financial data is to have assets (or liabilities) denominated in a currency that is different from the domestic one.
+I propose a tidy solution to this problem that involves no use of for cycles.
+The principle of the solution is that converting each currency can be done in parallel using the map function while the consolidation of the results will be done using the reduce logic.">
+<meta name="twitter:description" content="One of the most common problems when dealign with financial data is to have assets (or liabilities) denominated in a currency that is different from the domestic one.
+I propose a tidy solution to this problem that involves no use of for cycles.
+The principle of the solution is that converting each currency can be done in parallel using the map function while the consolidation of the results will be done using the reduce logic.">
+<meta property="og:locale" content="en-us">
+
+  
+    <meta property="article:published_time" content="2018-02-14T00:00:00">
+  
+  
+    <meta property="article:modified_time" content="2018-02-14T00:00:00">
+  
+  
+  
+    
+      <meta property="article:section" content="Finance">
+    
+  
+  
+    
+      <meta property="article:tag" content="R">
+    
+      <meta property="article:tag" content="FX">
+    
+  
+
+
+<meta name="twitter:card" content="summary">
+
+  <meta name="twitter:site" content="@DavideMagno">
+
+
+  <meta name="twitter:creator" content="@DavideMagno">
+
+
+
+
+
+
+
+
+
+
+  <meta property="og:image" content="https://www.gravatar.com/avatar/c1105417b6cb80bccd4bb80937e0ec69?s=640">
+  <meta property="twitter:image" content="https://www.gravatar.com/avatar/c1105417b6cb80bccd4bb80937e0ec69?s=640">
+
+
+    <title>Convert foreign currency valuations</title>
+
+    <link rel="icon" href="../../../favicon.png">
+    
+
+    
+
+    <link rel="canonical" href="../../../2018/02/convert-foreign-currency-valuations/">
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/jquery.fancybox.min.css" integrity="sha256-vuXZ9LGmmwtjqFX1F+EKin1ThZMub58gKULUyf0qECk=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/helpers/jquery.fancybox-thumbs.min.css" integrity="sha256-SEa4XYAHihTcEP1f5gARTB2K26Uk8PsndQYHQC1f4jU=" crossorigin="anonymous" />
+    
+    
+    <link rel="stylesheet" href="../../../css/style-nnm2spxvve8onlujjlegkkytaehyadd4ksxc1hyzzq9a2wvtrgbljqyulomn.min.css" />
+    
+    
+
+    
+      
+    
+    
+  </head>
+
+  <body>
+    <div id="blog">
+      <header id="header" data-behavior="5">
+  <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+  <div class="header-title">
+    <a class="header-title-link" href="../../../">The CuRious Financial Risk ManageR</a>
+  </div>
+  
+    
+      <a class="header-right-picture "
+         href="../../../#about">
+    
+    
+    
+      
+        <img class="header-picture" src="https://www.gravatar.com/avatar/c1105417b6cb80bccd4bb80937e0ec69?s=90" alt="Author&#39;s picture" />
+      
+    
+    </a>
+  
+</header>
+
+      <nav id="sidebar" data-behavior="5">
+  <div class="sidebar-container">
+    
+      <div class="sidebar-profile">
+        <a href="../../../#about">
+          <img class="sidebar-profile-picture" src="https://www.gravatar.com/avatar/c1105417b6cb80bccd4bb80937e0ec69?s=110" alt="Author&#39;s picture" />
+        </a>
+        <h4 class="sidebar-profile-name">Davide Magno</h4>
+        
+          <h5 class="sidebar-profile-bio">An Italian coding, tech, financial math professional and running lover</h5>
+        
+      </div>
+    
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="../../../">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+      
+      <span class="sidebar-button-desc">Home</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="mailto:davide.magno@gmail.com" target="_blank" rel="noopener">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-envelope"></i>
+      
+      <span class="sidebar-button-desc">Contact</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="../../../about/">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+      
+      <span class="sidebar-button-desc">About</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://www.linkedin.com/in/davidemagno/">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-linkedin"></i>
+      
+      <span class="sidebar-button-desc">LinkedIn</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://github.com/DavideMagno">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+      
+      <span class="sidebar-button-desc">GitHub</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://twitter.com/DavideMagno">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-twitter"></i>
+      
+      <span class="sidebar-button-desc">Twitter</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="../../../categories">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+      
+      <span class="sidebar-button-desc">Categories</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="../../../tags">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
+      
+      <span class="sidebar-button-desc">Tags</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="../../../index.xml">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+      
+      <span class="sidebar-button-desc">RSS</span>
+    </a>
+  </li>
+
+
+    </ul>
+  </div>
+</nav>
+
+      
+
+      <div id="main" data-behavior="5"
+        class="
+               hasCoverMetaIn
+               ">
+        <article class="post" itemscope itemType="http://schema.org/BlogPosting">
+          
+          
+            <div class="post-header main-content-wrap text-left">
+  
+    <h1 class="post-title" itemprop="headline">
+      Convert foreign currency valuations
+    </h1>
+  
+  
+  <div class="postShorten-meta post-meta">
+    
+      <time itemprop="datePublished" datetime="2018-02-14T00:00:00Z">
+        
+  
+  
+  
+  
+    14 February 2018
+  
+
+      </time>
+    
+    
+  
+  
+    <span>in</span>
+    
+      <a class="category-link" href="../../../categories/finance">Finance</a>
+    
+  
+
+  </div>
+
+</div>
+          
+          <div class="post-content markdown" itemprop="articleBody">
+            <div class="main-content-wrap">
+              
+
+
+<p>One of the most common problems when dealign with financial data is to have assets (or liabilities) denominated in a currency that is different from the domestic one.</p>
+<p>I propose a tidy solution to this problem that involves no use of for cycles.</p>
+<p>The principle of the solution is that converting each currency can be done in parallel using the <strong>map</strong> function while the consolidation of the results will be done using the <strong>reduce</strong> logic.</p>
+<p>I am a big fan of the tidyverse and therefore I will start loading the required packages</p>
+<pre class="r"><code>library(purrr)
+library(stringr)
+library(tibble)
+library(magrittr)
+library(dplyr)</code></pre>
+<p>I suppose to have a very simple investment dataset made of two fields:</p>
+<ol style="list-style-type: decimal">
+<li>a column with the currency of the investment (local currency being <em>EUR</em>)</li>
+<li>a column with the market value of the investment in local currency</li>
+</ol>
+<pre class="r"><code>Investments &lt;- tibble(ccy = c(rep(&quot;EUR&quot;,2), rep(&quot;JPY&quot;,3), rep(&quot;GBP&quot;,3)),
+                      local_MV = c(1.5e6,1.2e6,2e8,1.5e8,3e8,1e6,1.5e6,2e6)) %&gt;% 
+  mutate(local_MV = as.double(local_MV)) %&gt;% 
+  mutate(EUR_MV = local_MV)
+
+Investments</code></pre>
+<pre><code>## # A tibble: 8 x 3
+##   ccy    local_MV    EUR_MV
+##   &lt;chr&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+## 1 EUR     1500000   1500000
+## 2 EUR     1200000   1200000
+## 3 JPY   200000000 200000000
+## 4 JPY   150000000 150000000
+## 5 JPY   300000000 300000000
+## 6 GBP     1000000   1000000
+## 7 GBP     1500000   1500000
+## 8 GBP     2000000   2000000</code></pre>
+<p>I then store in a list the current currency FX rates</p>
+<pre class="r"><code>FX &lt;- list(&quot;JPY&quot; = 130, &quot;GBP&quot; = 0.8)</code></pre>
+<p>The first part of the algorithm consists in finding the rows of the Investments database which are subject to FX conversion for each of the currencies that are stored in the <strong>FX</strong> list using the <em>stringr</em> function <em>str_which</em>.</p>
+<p>This is the “parallel” part of the algorithm because it can be done currency by currency independently. We therefore use the <em>map</em> function of the <em>purrr</em> package.</p>
+<pre class="r"><code>pos_ccy &lt;- map(names(FX), ~str_which(Investments$ccy,.)) %&gt;% 
+  set_names(names(FX))
+
+pos_ccy</code></pre>
+<pre><code>## $JPY
+## [1] 3 4 5
+## 
+## $GBP
+## [1] 6 7 8</code></pre>
+<p>This list contains the row numbers for which there is an investment denominated in each of the currencies in the FX universe.
+We then use this information together with the actual FX rate to convert the investments’ local market value. We now use the <em>map2</em> function.</p>
+<pre class="r"><code>converted_MV &lt;- map2(pos_ccy, FX ,~Investments$local_MV[.x]/.y)
+
+converted_MV</code></pre>
+<pre><code>## $JPY
+## [1] 1538462 1153846 2307692
+## 
+## $GBP
+## [1] 1250000 1875000 2500000</code></pre>
+<p>We can notice that we now have a list made by two different vectors of converted market values. We need to consolidate those into the EUR_MV column in the Investments dataset.</p>
+<p>This is the second step of the algorithm that uses the <em>reduce</em> function of <em>purrr</em></p>
+<pre class="r"><code>Investments$EUR_MV[pos_ccy %&gt;% reduce(c)] &lt;- converted_MV %&gt;% 
+  reduce(c)
+
+Investments</code></pre>
+<pre><code>## # A tibble: 8 x 3
+##   ccy    local_MV   EUR_MV
+##   &lt;chr&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+## 1 EUR     1500000 1500000 
+## 2 EUR     1200000 1200000 
+## 3 JPY   200000000 1538462.
+## 4 JPY   150000000 1153846.
+## 5 JPY   300000000 2307692.
+## 6 GBP     1000000 1250000 
+## 7 GBP     1500000 1875000 
+## 8 GBP     2000000 2500000</code></pre>
+<p>This function modifies rows of the EUR_MV field by reducing the lists from the map functions into vectors.</p>
+<p>We can notice that the EUR positions have not changed their market value.</p>
+
+              
+            </div>
+          </div>
+          <div id="post-footer" class="post-footer main-content-wrap">
+            
+              
+                
+                
+                  <div class="post-footer-tags">
+                    <span class="text-color-light text-small">TAGGED IN</span><br/>
+                    
+  <a class="tag tag--primary tag--small" href="../../../tags/r/">R</a>
+
+  <a class="tag tag--primary tag--small" href="../../../tags/fx/">FX</a>
+
+                  </div>
+                
+              
+            
+            <div class="post-actions-wrap">
+  
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2019/02/my-first-tidytuesday-submission/" data-tooltip="My First #TidyTuesday Submission">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">NEXT</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2018/01/generate-scenarios-correlated-to-existing-ones/" data-tooltip="Generate scenarios correlated to existing ones">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">PREVIOUS</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md hide-sm">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=/2018/02/convert-foreign-currency-valuations/">
+              <i class="fa fa-facebook-official"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=/2018/02/convert-foreign-currency-valuations/">
+              <i class="fa fa-twitter"></i>
+            </a>
+          </li>
+        
+      
+      
+        <li class="post-action">
+          <a class="post-action-btn btn btn--default" href="#disqus_thread">
+            <i class="fa fa-comment-o"></i>
+          </a>
+        </li>
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+
+            
+              
+                <div id="disqus_thread">
+  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+              
+            
+          </div>
+        </article>
+        <footer id="footer" class="main-content-wrap">
+  <span class="copyrights">
+    &copy; 2019 <a href="https://github.com/DavideMagno">Davide Magno</a>. All Rights Reserved
+  </span>
+</footer>
+
+      </div>
+      <div id="bottom-bar" class="post-bottom-bar" data-behavior="5">
+        <div class="post-actions-wrap">
+  
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2019/02/my-first-tidytuesday-submission/" data-tooltip="My First #TidyTuesday Submission">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">NEXT</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2018/01/generate-scenarios-correlated-to-existing-ones/" data-tooltip="Generate scenarios correlated to existing ones">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">PREVIOUS</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md hide-sm">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=/2018/02/convert-foreign-currency-valuations/">
+              <i class="fa fa-facebook-official"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=/2018/02/convert-foreign-currency-valuations/">
+              <i class="fa fa-twitter"></i>
+            </a>
+          </li>
+        
+      
+      
+        <li class="post-action">
+          <a class="post-action-btn btn btn--default" href="#disqus_thread">
+            <i class="fa fa-comment-o"></i>
+          </a>
+        </li>
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+
+      </div>
+      <div id="share-options-bar" class="share-options-bar" data-behavior="5">
+  <i id="btn-close-shareoptions" class="fa fa-close"></i>
+  <ul class="share-options">
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=%2F2018%2F02%2Fconvert-foreign-currency-valuations%2F">
+          <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=%2F2018%2F02%2Fconvert-foreign-currency-valuations%2F">
+          <i class="fa fa-twitter"></i><span>Share on Twitter</span>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+    </div>
+    
+    <div id="about">
+  <div id="about-card">
+    <div id="about-btn-close">
+      <i class="fa fa-remove"></i>
+    </div>
+    
+      <img id="about-card-picture" src="https://www.gravatar.com/avatar/c1105417b6cb80bccd4bb80937e0ec69?s=110" alt="Author&#39;s picture" />
+    
+    <h4 id="about-card-name">Davide Magno</h4>
+    
+      <div id="about-card-bio">An Italian coding, tech, financial math professional and running lover</div>
+    
+    
+      <div id="about-card-job">
+        <i class="fa fa-briefcase"></i>
+        <br/>
+        Head of Financial Risk Management
+      </div>
+    
+    
+      <div id="about-card-location">
+        <i class="fa fa-map-marker"></i>
+        <br/>
+        Dublin, Ireland
+      </div>
+    
+  </div>
+</div>
+
+    <div id="algolia-search-modal" class="modal-container">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="close-button"><i class="fa fa-close"></i></span>
+      <a href="https://algolia.com" target="_blank" rel="noopener" class="searchby-algolia text-color-light link-unstyled">
+        <span class="searchby-algolia-text text-color-light text-small">by</span>
+        <img class="searchby-algolia-logo" src="https://www.algolia.com/static_assets/images/press/downloads/algolia-light.svg">
+      </a>
+      <i class="search-icon fa fa-search"></i>
+      <form id="algolia-search-form">
+        <input type="text" id="algolia-search-input" name="search"
+          class="form-control input--large search-input" placeholder="Search" />
+      </form>
+    </div>
+    <div class="modal-body">
+      <div class="no-result text-color-light text-center">no post found</div>
+      <div class="results">
+        
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="../../../2019/02/us-federal-spending-analysis/">
+                <h3 class="media-heading">US Federal Spending Analysis</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Feb 2, 2019
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">This week&#39;s #TidyTuesday is about federal spending. I was interested in understanding if spending had shifted towards clean energy sub-agencies in the last 20 years. Spoiler alert: unfortunately no! 😰#Rstats #tidyverse cc @thomas_mock @R4DScommunity pic.twitter.com/AbQzheSagU
+&mdash; Davide Magno (@DavideMagno) February 12, 2019  </div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="../../../2019/02/geospatial-analysis-on-housing-price-index/">
+                <h3 class="media-heading">Geospatial Analysis on Housing Price Index</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Feb 2, 2019
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">Here&#39;s my #TidyTuesday submission.I studied the total increase in the housing index for each US State compared to the US federal index. No surprise in California house price has increased much more than the rest of US.The #mapdata library was 👍🏼@thomas_mock @R4DScommunity #rstats pic.twitter.com/sYI1zKhIpC
+&mdash; Davide Magno (@DavideMagno) February 10, 2019  </div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="../../../2019/02/my-first-tidytuesday-submission/">
+                <h3 class="media-heading">My First #TidyTuesday Submission</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Feb 2, 2019
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">Finally my first #TidyTuesday submission! 🎊🎉I am starting from week 1 2019 but I will catch up soon😉When do people submit their visualisations?Mostly on Tuesday and Wednesday afternoon, but also on Monday before the new set is released #rstats #ggplot @rstats4ds @thomas_mock pic.twitter.com/pKZAyL8vp1
+&mdash; Davide Magno (@DavideMagno) February 3, 2019  </div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="../../../2018/02/convert-foreign-currency-valuations/">
+                <h3 class="media-heading">Convert foreign currency valuations</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Feb 2, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">One of the most common problems when dealign with financial data is to have assets (or liabilities) denominated in a currency that is different from the domestic one.
+I propose a tidy solution to this problem that involves no use of for cycles.
+The principle of the solution is that converting each currency can be done in parallel using the map function while the consolidation of the results will be done using the reduce logic.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="../../../2018/01/generate-scenarios-correlated-to-existing-ones/">
+                <h3 class="media-heading">Generate scenarios correlated to existing ones</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Jan 1, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">In quantitative finance we often look at simulations of some market risk factors like equity returns or interest rate changes.
+There are many third party companies who specialize in the historical calibration of such variables and provide simulations of future expected outcomes to the companies who require them.
+For example, let’s suppose that we receive the expected returns of the Google shares as per the following distribution
+# This modelling is given by the third party and in theory we don&#39;t know it google &lt;- rnorm(10000, mean = 0.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+      </div>
+    </div>
+    <div class="modal-footer">
+      <p class="results-count text-medium"
+         data-message-zero="no post found"
+         data-message-one="1 post found"
+         data-message-other="{n} posts found">
+         5 posts found
+      </p>
+    </div>
+  </div>
+</div>
+    
+  
+    
+    <div id="cover" style="background-image:url('/images/celestino.png');"></div>
+  
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.7/js/jquery.fancybox.min.js" integrity="sha256-GEAnjcTqVP+vBp3SSc8bEDQqvWAZMiHyUSIorrWwH50=" crossorigin="anonymous"></script>
+
+
+<script src="../../../js/script-qi9wbxp2ya2j6p7wx1i6tgavftewndznf4v0hy2gvivk1rxgc3lm7njqb6bz.min.js"></script>
+
+
+<script lang="javascript">
+window.onload = updateMinWidth;
+window.onresize = updateMinWidth;
+document.getElementById("sidebar").addEventListener("transitionend", updateMinWidth);
+function updateMinWidth() {
+  var sidebar = document.getElementById("sidebar");
+  var main = document.getElementById("main");
+  main.style.minWidth = "";
+  var w1 = getComputedStyle(main).getPropertyValue("min-width");
+  var w2 = getComputedStyle(sidebar).getPropertyValue("width");
+  var w3 = getComputedStyle(sidebar).getPropertyValue("left");
+  main.style.minWidth = `calc(${w1} - ${w2} - ${w3})`;
+}
+</script>
+
+<script>
+$(document).ready(function() {
+  hljs.configure({ classPrefix: '', useBR: false });
+  $('pre.code-highlight > code, pre > code').each(function(i, block) {
+    if (!$(this).hasClass('codeblock')) {
+      $(this).addClass('codeblock');
+    }
+    hljs.highlightBlock(block);
+  });
+});
+</script>
+
+
+  
+    
+      <script>
+        var disqus_config = function () {
+          this.page.url = '\/2018\/02\/convert-foreign-currency-valuations\/';
+          
+            this.page.identifier = '\/2018\/02\/convert-foreign-currency-valuations\/'
+          
+        };
+        (function() {
+          
+          
+          if (window.location.hostname == "localhost") {
+            return;
+          }
+          var d = document, s = d.createElement('script');
+          var disqus_shortname = 'davidemagno';
+          s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+          s.setAttribute('data-timestamp', +new Date());
+          (d.head || d.body).appendChild(s);
+        })();
+      </script>
+    
+  
+
+
+
+
+    
+  </body>
+</html>
+

@@ -1,0 +1,19 @@
+---
+title: 'My first #TidyTuesday Entry'
+author: Davide Magno
+date: '2019-02-03'
+slug: my-first-tidytuesday-entry
+categories:
+  - TidyTuesday
+tags:
+  - TidyTuesday
+  - Twitter
+  - Coding
+  - R
+keywords:
+  - tech
+---
+
+```{r echo = FALSE}
+blogdown::shortcode('tweet','1092142256373620739')
+```

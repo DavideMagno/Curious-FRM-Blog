@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Coding on The CuRious Financial Risk ManageR</title>
+    <link>/tags/coding/</link>
+    <description>Recent content in Coding on The CuRious Financial Risk ManageR</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 11 Feb 2019 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/tags/coding/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>US Federal Spending Analysis</title>
+      <link>/2019/02/us-federal-spending-analysis/</link>
+      <pubDate>Mon, 11 Feb 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/2019/02/us-federal-spending-analysis/</guid>
+      <description>This week&amp;#39;s #TidyTuesday is about federal spending. I was interested in understanding if spending had shifted towards clean energy sub-agencies in the last 20 years. Spoiler alert: unfortunately no! 😰#Rstats #tidyverse cc @thomas_mock @R4DScommunity pic.twitter.com/AbQzheSagU
+&amp;mdash; Davide Magno (@DavideMagno) February 12, 2019  </description>
+    </item>
+    
+    <item>
+      <title>Geospatial Analysis on Housing Price Index</title>
+      <link>/2019/02/geospatial-analysis-on-housing-price-index/</link>
+      <pubDate>Sun, 10 Feb 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/2019/02/geospatial-analysis-on-housing-price-index/</guid>
+      <description>Here&amp;#39;s my #TidyTuesday submission.I studied the total increase in the housing index for each US State compared to the US federal index. No surprise in California house price has increased much more than the rest of US.The #mapdata library was 👍🏼@thomas_mock @R4DScommunity #rstats pic.twitter.com/sYI1zKhIpC
+&amp;mdash; Davide Magno (@DavideMagno) February 10, 2019  </description>
+    </item>
+    
+    <item>
+      <title>My First #TidyTuesday Submission</title>
+      <link>/2019/02/my-first-tidytuesday-submission/</link>
+      <pubDate>Sun, 03 Feb 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/2019/02/my-first-tidytuesday-submission/</guid>
+      <description>Finally my first #TidyTuesday submission! 🎊🎉I am starting from week 1 2019 but I will catch up soon😉When do people submit their visualisations?Mostly on Tuesday and Wednesday afternoon, but also on Monday before the new set is released #rstats #ggplot @rstats4ds @thomas_mock pic.twitter.com/pKZAyL8vp1
+&amp;mdash; Davide Magno (@DavideMagno) February 3, 2019  </description>
+    </item>
+    
+  </channel>
+</rss>
