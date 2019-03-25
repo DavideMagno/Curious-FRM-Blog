@@ -13,7 +13,8 @@
 # use grunt task `build` to synchronize assets
 
 baseURL = "https://compassionate-neumann-e78e62.netlify.com/"
-relativeURLs = true
+relativeURLs = false
+publishDir = "."
 enableEmoji = true
 languageCode = "en-us"
 defaultContentLanguage = "en-us"
@@ -23,7 +24,6 @@ disqusShortname = "davidemagno"
 # googleAnalytics = "UA-123-45"
 paginate = 4
 canonifyurls = true
-# uglyURLs = true
 
 
 [permalinks]
