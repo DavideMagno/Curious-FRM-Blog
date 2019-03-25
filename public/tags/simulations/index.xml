@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Simulations on The CuRious Financial Risk ManageR</title>
-    <link>/tags/simulations/</link>
+    <link>https://www.curiousfrm.com/tags/simulations/</link>
     <description>Recent content in Simulations on The CuRious Financial Risk ManageR</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Mon, 29 Jan 2018 00:00:00 +0000</lastBuildDate>
     
-        <atom:link href="/tags/simulations/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://www.curiousfrm.com/tags/simulations/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Generate scenarios correlated to existing ones</title>
-      <link>/2018/01/generate-scenarios-correlated-to-existing-ones/</link>
+      <link>https://www.curiousfrm.com/2018/01/generate-scenarios-correlated-to-existing-ones/</link>
       <pubDate>Mon, 29 Jan 2018 00:00:00 +0000</pubDate>
       
-      <guid>/2018/01/generate-scenarios-correlated-to-existing-ones/</guid>
+      <guid>https://www.curiousfrm.com/2018/01/generate-scenarios-correlated-to-existing-ones/</guid>
       <description>
 
 
@@ -62,7 +62,7 @@ ggplot(data = fb, aes(x = fb_returns)) +
 &lt;pre&gt;&lt;code&gt;## Warning: `as.tibble()` is deprecated, use `as_tibble()` (but mind the new semantics).
 ## This warning is displayed once per session.&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cor(Returns$fb_returns, Returns$google_returns)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] -0.006146476&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.0166395&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;../../post/22_01_2018_simulations_files/figure-html/Correlation_graph-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;We can notice that performing the simple simulation doesn’t allow us to impose a correlation structure with the data provided by the third party provider.&lt;/p&gt;
 &lt;p&gt;How can we generate a random variable with a defined correlation to an existing one?

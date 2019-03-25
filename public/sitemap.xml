@@ -3,132 +3,132 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>/2019/02/us-federal-spending-analysis/</loc>
+    <loc>https://www.curiousfrm.com/2019/02/us-federal-spending-analysis/</loc>
     <lastmod>2019-02-11T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>/2019/02/geospatial-analysis-on-housing-price-index/</loc>
+    <loc>https://www.curiousfrm.com/2019/02/geospatial-analysis-on-housing-price-index/</loc>
     <lastmod>2019-02-10T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>/2019/02/my-first-tidytuesday-submission/</loc>
+    <loc>https://www.curiousfrm.com/2019/02/my-first-tidytuesday-submission/</loc>
     <lastmod>2019-02-03T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>/2018/02/convert-foreign-currency-valuations/</loc>
+    <loc>https://www.curiousfrm.com/2018/02/convert-foreign-currency-valuations/</loc>
     <lastmod>2018-02-14T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>/2018/01/generate-scenarios-correlated-to-existing-ones/</loc>
+    <loc>https://www.curiousfrm.com/2018/01/generate-scenarios-correlated-to-existing-ones/</loc>
     <lastmod>2018-01-29T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>/archives/</loc>
+    <loc>https://www.curiousfrm.com/archives/</loc>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/categories/</loc>
+    <loc>https://www.curiousfrm.com/categories/</loc>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/tags/coding/</loc>
+    <loc>https://www.curiousfrm.com/tags/coding/</loc>
     <lastmod>2019-02-11T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/tags/community/</loc>
-    <lastmod>2019-02-03T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>/tags/density/</loc>
-    <lastmod>2018-01-29T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>/tags/economics/</loc>
-    <lastmod>2019-02-11T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>/tags/equity/</loc>
-    <lastmod>2018-01-29T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>/categories/finance/</loc>
-    <lastmod>2018-02-14T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>/tags/fx/</loc>
-    <lastmod>2018-02-14T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>/post/</loc>
-    <lastmod>2019-02-11T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>/tags/r/</loc>
-    <lastmod>2018-02-14T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>/tags/simulations/</loc>
-    <lastmod>2018-01-29T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>/tags/submission/</loc>
+    <loc>https://www.curiousfrm.com/tags/community/</loc>
     <lastmod>2019-02-03T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/tags/</loc>
+    <loc>https://www.curiousfrm.com/tags/density/</loc>
+    <lastmod>2018-01-29T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.curiousfrm.com/tags/economics/</loc>
     <lastmod>2019-02-11T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/</loc>
+    <loc>https://www.curiousfrm.com/tags/equity/</loc>
+    <lastmod>2018-01-29T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.curiousfrm.com/categories/finance/</loc>
+    <lastmod>2018-02-14T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.curiousfrm.com/tags/fx/</loc>
+    <lastmod>2018-02-14T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.curiousfrm.com/post/</loc>
     <lastmod>2019-02-11T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/tags/tidytuesday/</loc>
+    <loc>https://www.curiousfrm.com/tags/r/</loc>
+    <lastmod>2018-02-14T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.curiousfrm.com/tags/simulations/</loc>
+    <lastmod>2018-01-29T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.curiousfrm.com/tags/submission/</loc>
+    <lastmod>2019-02-03T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.curiousfrm.com/tags/</loc>
     <lastmod>2019-02-11T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/categories/tidytuesday/</loc>
+    <loc>https://www.curiousfrm.com/</loc>
     <lastmod>2019-02-11T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>/tags/twitter/</loc>
+    <loc>https://www.curiousfrm.com/tags/tidytuesday/</loc>
+    <lastmod>2019-02-11T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.curiousfrm.com/categories/tidytuesday/</loc>
+    <lastmod>2019-02-11T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.curiousfrm.com/tags/twitter/</loc>
     <lastmod>2019-02-11T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
