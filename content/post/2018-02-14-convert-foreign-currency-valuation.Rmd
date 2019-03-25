@@ -10,6 +10,8 @@ One of the most common problems when dealign with financial data is to have asse
 
 I propose a tidy solution to this problem that involves no use of for cycles.
 
+<!--more-->
+
 The principle of the solution is that converting each currency can be done in parallel using the **map** function while the consolidation of the results will be done using the **reduce** logic.
 
 I am a big fan of the tidyverse and therefore I will start loading the required packages

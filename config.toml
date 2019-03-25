@@ -13,8 +13,8 @@
 # use grunt task `build` to synchronize assets
 
 baseURL = "https://compassionate-neumann-e78e62.netlify.com/"
-relativeURLs = false
-publishDir = "."
+ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
+relativeURLs = true
 enableEmoji = true
 languageCode = "en-us"
 defaultContentLanguage = "en-us"

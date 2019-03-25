@@ -51,7 +51,7 @@ ggplot(data = fb, aes(x = fb_returns)) +
 <pre><code>## Warning: `as.tibble()` is deprecated, use `as_tibble()` (but mind the new semantics).
 ## This warning is displayed once per session.</code></pre>
 <pre class="r"><code>cor(Returns$fb_returns, Returns$google_returns)</code></pre>
-<pre><code>## [1] -0.006146476</code></pre>
+<pre><code>## [1] -6.612024e-05</code></pre>
 <p><img src="/post/22_01_2018_simulations_files/figure-html/Correlation_graph-1.png" width="672" /></p>
 <p>We can notice that performing the simple simulation doesn’t allow us to impose a correlation structure with the data provided by the third party provider.</p>
 <p>How can we generate a random variable with a defined correlation to an existing one?
