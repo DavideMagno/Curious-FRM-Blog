@@ -109,7 +109,7 @@ canonifyurls = true
   identifier = "link"
   name = "R-Bloggers"
   pre = "<i class=\"sidebar-button-icon fa fa-lg fa-external-link\"></i>"
-  url = "http://feeds.feedburner.com/RBloggers"
+  url = "https://www.r-bloggers.com"
 
 
 [params]
