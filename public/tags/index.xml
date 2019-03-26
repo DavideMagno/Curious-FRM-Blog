@@ -2,111 +2,111 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on The CuRious Financial Risk ManageR</title>
-    <link>https://www.curiousfrm.com/tags/</link>
+    <link>/tags/</link>
     <description>Recent content in Tags on The CuRious Financial Risk ManageR</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Mon, 11 Feb 2019 00:00:00 +0000</lastBuildDate>
     
-        <atom:link href="https://www.curiousfrm.com/tags/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Coding</title>
-      <link>https://www.curiousfrm.com/tags/coding/</link>
+      <link>/tags/coding/</link>
       <pubDate>Mon, 11 Feb 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://www.curiousfrm.com/tags/coding/</guid>
+      <guid>/tags/coding/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Community</title>
-      <link>https://www.curiousfrm.com/tags/community/</link>
+      <link>/tags/community/</link>
       <pubDate>Sun, 03 Feb 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://www.curiousfrm.com/tags/community/</guid>
+      <guid>/tags/community/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Density</title>
-      <link>https://www.curiousfrm.com/tags/density/</link>
+      <link>/tags/density/</link>
       <pubDate>Mon, 29 Jan 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://www.curiousfrm.com/tags/density/</guid>
+      <guid>/tags/density/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Economics</title>
-      <link>https://www.curiousfrm.com/tags/economics/</link>
+      <link>/tags/economics/</link>
       <pubDate>Mon, 11 Feb 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://www.curiousfrm.com/tags/economics/</guid>
+      <guid>/tags/economics/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Equity</title>
-      <link>https://www.curiousfrm.com/tags/equity/</link>
+      <link>/tags/equity/</link>
       <pubDate>Mon, 29 Jan 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://www.curiousfrm.com/tags/equity/</guid>
+      <guid>/tags/equity/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Fx</title>
-      <link>https://www.curiousfrm.com/tags/fx/</link>
+      <link>/tags/fx/</link>
       <pubDate>Wed, 14 Feb 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://www.curiousfrm.com/tags/fx/</guid>
+      <guid>/tags/fx/</guid>
       <description></description>
     </item>
     
     <item>
       <title>R</title>
-      <link>https://www.curiousfrm.com/tags/r/</link>
+      <link>/tags/r/</link>
       <pubDate>Wed, 14 Feb 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://www.curiousfrm.com/tags/r/</guid>
+      <guid>/tags/r/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Simulations</title>
-      <link>https://www.curiousfrm.com/tags/simulations/</link>
+      <link>/tags/simulations/</link>
       <pubDate>Mon, 29 Jan 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://www.curiousfrm.com/tags/simulations/</guid>
+      <guid>/tags/simulations/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Submission</title>
-      <link>https://www.curiousfrm.com/tags/submission/</link>
+      <link>/tags/submission/</link>
       <pubDate>Sun, 03 Feb 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://www.curiousfrm.com/tags/submission/</guid>
+      <guid>/tags/submission/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Tidytuesday</title>
-      <link>https://www.curiousfrm.com/tags/tidytuesday/</link>
+      <link>/tags/tidytuesday/</link>
       <pubDate>Mon, 11 Feb 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://www.curiousfrm.com/tags/tidytuesday/</guid>
+      <guid>/tags/tidytuesday/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Twitter</title>
-      <link>https://www.curiousfrm.com/tags/twitter/</link>
+      <link>/tags/twitter/</link>
       <pubDate>Mon, 11 Feb 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://www.curiousfrm.com/tags/twitter/</guid>
+      <guid>/tags/twitter/</guid>
       <description></description>
     </item>
     
