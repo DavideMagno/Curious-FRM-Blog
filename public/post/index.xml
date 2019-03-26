@@ -155,7 +155,7 @@ ggplot(data = google, aes(x = google_returns)) +
         subtitle = &amp;quot;One Year forward distribution&amp;quot;) +
   xlab(&amp;quot;One year forward return&amp;quot;) + 
   ylab(&amp;quot;Density&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;../post/22_01_2018_simulations_files/figure-html/Google-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/22_01_2018_simulations_files/figure-html/Google-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;We now want to simulate the distribution of another risk factor which is not provided by the third party but that is usefull for us. Let’s say it is the distribution of the Facebook shares which we imagine to:&lt;/p&gt;
 &lt;ol style=&#34;list-style-type: decimal&#34;&gt;
 &lt;li&gt;be distributed as a normal random variable&lt;/li&gt;
@@ -175,7 +175,7 @@ ggplot(data = fb, aes(x = fb_returns)) +
         subtitle = &amp;quot;One Year forward distribution&amp;quot;) +
   xlab(&amp;quot;One year forward return&amp;quot;) + 
   ylab(&amp;quot;Density&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;../post/22_01_2018_simulations_files/figure-html/Facebook-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/22_01_2018_simulations_files/figure-html/Facebook-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Let’s now look at the correlation between the two variables:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;Returns &amp;lt;- google %&amp;gt;% 
   cbind(fb) %&amp;gt;% 
@@ -184,7 +184,7 @@ ggplot(data = fb, aes(x = fb_returns)) +
 ## This warning is displayed once per session.&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cor(Returns$fb_returns, Returns$google_returns)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## [1] 0.0166395&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;../post/22_01_2018_simulations_files/figure-html/Correlation_graph-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/22_01_2018_simulations_files/figure-html/Correlation_graph-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;We can notice that performing the simple simulation doesn’t allow us to impose a correlation structure with the data provided by the third party provider.&lt;/p&gt;
 &lt;p&gt;How can we generate a random variable with a defined correlation to an existing one?
 A very elegant solution was provided by user &lt;strong&gt;whuber&lt;/strong&gt; at the following link &lt;a href=&#34;https://stats.stackexchange.com/a/313138&#34; class=&#34;uri&#34;&gt;https://stats.stackexchange.com/a/313138&lt;/a&gt; and by using the following function&lt;/p&gt;
@@ -200,7 +200,7 @@ A very elegant solution was provided by user &lt;strong&gt;whuber&lt;/strong&gt;
 
 cor(Returns$google_returns, Returns$fb_correlated)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## [1] 0.8&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;../post/22_01_2018_simulations_files/figure-html/Add_Correlation_Graph-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/22_01_2018_simulations_files/figure-html/Add_Correlation_Graph-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;There is just one last thing to do: compare the distributions of the two Facebook simulations&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;Returns %&amp;gt;% 
   select(contains(&amp;quot;fb&amp;quot;)) %&amp;gt;% 
@@ -211,7 +211,7 @@ cor(Returns$google_returns, Returns$fb_correlated)&lt;/code&gt;&lt;/pre&gt;
   labs(title = &amp;quot;Facebook Shares&amp;#39; simulations&amp;quot;) +
   xlab(&amp;quot;One year forward return&amp;quot;) + 
   ylab(&amp;quot;Density&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;../post/22_01_2018_simulations_files/figure-html/unnamed-chunk-1-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/22_01_2018_simulations_files/figure-html/unnamed-chunk-1-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;We can notice that the marginal distribution of the correlated scenario is much different from the original one.&lt;/p&gt;
 &lt;p&gt;There is therefore one additional step before we finish: we need to rescale the marginal distribution.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;Rescaled_fb_correlated &amp;lt;- Returns %&amp;gt;%
@@ -232,7 +232,7 @@ Returns %&amp;lt;&amp;gt;%
   labs(title = &amp;quot;Facebook Shares&amp;#39; simulations&amp;quot;) +
   xlab(&amp;quot;One year forward return&amp;quot;) + 
   ylab(&amp;quot;Density&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;../post/22_01_2018_simulations_files/figure-html/unnamed-chunk-2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/22_01_2018_simulations_files/figure-html/unnamed-chunk-2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cor(Returns$google_returns, Returns$fb_correlated)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## [1] 0.8&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The new Facebook scenario is now both correlated and in line with the density we want.&lt;/p&gt;
