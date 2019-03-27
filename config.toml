@@ -21,7 +21,7 @@ defaultContentLanguage = "en-us"
 title = "The CuRious Financial Risk ManageR"
 theme = "hugo-tranquilpeak-theme"
 disqusShortname = "davidemagno"
-# googleAnalytics = "UA-123-45"
+googleAnalytics = "UA-137185358-1"
 paginate = 4
 canonifyurls = true
 
