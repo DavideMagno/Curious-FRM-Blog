@@ -20,11 +20,13 @@ languageCode = "en-us"
 defaultContentLanguage = "en-us"
 title = "The CuRious Financial Risk ManageR"
 theme = "hugo-tranquilpeak-theme"
-disqusShortname = "davidemagno"
+# disqusShortname = "davidemagno"
 googleAnalytics = "UA-137185358-1"
 paginate = 4
 canonifyurls = true
 
+MathJaxCDN =  "//cdn.bootcss.com" 
+MathJaxVersion =  "2.7.1" 
 
 [permalinks]
   post = "/:year/:month/:slug/"
@@ -67,7 +69,7 @@ canonifyurls = true
   identifier = "about"
   name = "About"
   pre = "<i class=\"sidebar-button-icon fa fa-lg fa-question\"></i>"
-  url = "/about/"
+  url = "/#about/"
 [[menu.links]]
   weight = 4
   identifier = "linkedin"

@@ -168,7 +168,7 @@ if (!doNotTrack) {
 
   <li class="sidebar-button">
     
-      <a class="sidebar-button-link " href="/about/">
+      <a class="sidebar-button-link " href="/#about/">
     
       <i class="sidebar-button-icon fa fa-lg fa-question"></i>
       
@@ -376,12 +376,6 @@ if (!doNotTrack) {
         
       
       
-        <li class="post-action">
-          <a class="post-action-btn btn btn--default" href="#disqus_thread">
-            <i class="fa fa-comment-o"></i>
-          </a>
-        </li>
-      
       <li class="post-action">
         
           <a class="post-action-btn btn btn--default" href="#">
@@ -394,17 +388,6 @@ if (!doNotTrack) {
 </div>
 
             
-              
-                <div id="disqus_thread"></div>
-<script>
-(function() {
-var d = document, s = d.createElement('script');
-s.src = 'https://davidemagno.disqus.com/embed.js';
-s.setAttribute('data-timestamp', +new Date());
-(d.head || d.body).appendChild(s);
-})();
-</script>
-<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
               
             
           </div>
@@ -462,12 +445,6 @@ s.setAttribute('data-timestamp', +new Date());
           </li>
         
       
-      
-        <li class="post-action">
-          <a class="post-action-btn btn btn--default" href="#disqus_thread">
-            <i class="fa fa-comment-o"></i>
-          </a>
-        </li>
       
       <li class="post-action">
         
@@ -549,6 +526,24 @@ s.setAttribute('data-timestamp', +new Date());
       <div class="no-result text-color-light text-center">no post found</div>
       <div class="results">
         
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="/2019/03/using-the-tidyverse-for-swap-pricing/">
+                <h3 class="media-heading">Using the tidyverse for swap pricing</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Mar 3, 2019
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">Introduction I am a big passionate of the tidyverse packages: I think they make the code very clean and clear. In particular, I like the lubridate packages for managing and making operations with dates but its major drawback is that it doesn’t manage financial holidays, which are key when projecting financial cashflows linked to instruments like interest rte swaps.
+In this case, I prefer to use the RQuantLib package.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
         
           <div class="media">
             
@@ -650,7 +645,7 @@ For example, let’s suppose that we receive the expected returns of the Google 
          data-message-zero="no post found"
          data-message-one="1 post found"
          data-message-other="{n} posts found">
-         5 posts found
+         6 posts found
       </p>
     </div>
   </div>
@@ -702,28 +697,6 @@ $(document).ready(function() {
 
 
   
-    
-      <script>
-        var disqus_config = function () {
-          this.page.url = '\/2019\/02\/geospatial-analysis-on-housing-price-index\/';
-          
-            this.page.identifier = '\/2019\/02\/geospatial-analysis-on-housing-price-index\/'
-          
-        };
-        (function() {
-          
-          
-          if (window.location.hostname == "localhost") {
-            return;
-          }
-          var d = document, s = d.createElement('script');
-          var disqus_shortname = 'davidemagno';
-          s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-
-          s.setAttribute('data-timestamp', +new Date());
-          (d.head || d.body).appendChild(s);
-        })();
-      </script>
     
   
 

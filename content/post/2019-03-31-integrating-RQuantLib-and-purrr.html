@@ -1,0 +1,116 @@
+---
+title: "Using the tidyverse for swap pricing"
+author: "Davide Magno"
+date: '2019-03-31'
+categories: [Finance]
+tags: [R, Interest Rates, RQuantLib, Purrr]
+---
+
+
+
+<div id="introduction" class="section level3">
+<h3>Introduction</h3>
+<p>I am a big passionate of the <strong>tidyverse</strong> packages: I think they make the code very clean and clear. In particular, I like the <strong>lubridate</strong> packages for managing and making operations with dates but its major drawback is that it doesn’t manage financial holidays, which are key when projecting financial cashflows linked to instruments like interest rte swaps.</p>
+<p>In this case, I prefer to use the <strong>RQuantLib</strong> package.</p>
+<p>I will show how these packages can interact quite well by pricing a simple 7 years forward starting interest rate swap.</p>
+</div>
+<div id="a-simplified-interest-rate-environment" class="section level3">
+<h3>A simplified interest rate environment</h3>
+<p>Let’s firstly define a <strong>simplified</strong> market with flat <em>zero rates</em> at 2.5% (after all, not much different to the USD swap curve at the time of writing this post).</p>
+<p>The discount factors formula can be found <a href="https://en.wikipedia.org/wiki/Discounting#cite_note-Economics_Discount-2">here</a> and it is used as per the code below:</p>
+<pre class="r"><code>Today &lt;- lubridate::ymd(20190329) # curve snap date
+R &lt;- 0.025 # zero rate
+T2M &lt;- seq(0,10) # sequential time to maturity
+DF &lt;- 1/(1 + R)^T2M # discount factors
+DF_Table &lt;- tibble::tibble(T2M = T2M, DF = DF) # discount factors table</code></pre>
+</div>
+<div id="pricing-a-forward-starting-swap" class="section level3">
+<h3>Pricing a forward starting swap</h3>
+<p>Let’s now consider a forward starting swap that settles on the 31st of May 2019 and that has got 7 years of maturity.</p>
+<p>The <code>advance</code> function in the <strong>RQuantLib</strong> package allows to calculate a date in the future given:</p>
+<ul>
+<li>a calendar with the set of holidays well defined</li>
+<li>a starting date</li>
+<li>the number of time units to move forward</li>
+<li>the basic time unit to move forward (days, weeks, months…)</li>
+<li>a business day convention (please refer to the help page of the function for more info <code>?RQuantLib::advance</code> )</li>
+<li>whether the end-of-month rule applies (ie. if the starting date is the last business date of the month and the time unit is monthly or yearly, the forward date has to be the last date of the target month, net of business day adjustment)</li>
+</ul>
+<p>The code below shows how to use this function:</p>
+<pre class="r"><code>RQuantLib::advance(calendar = &quot;UnitedStates&quot;, 
+                   dates = lubridate::ymd(20190531), 
+                   n = 1, 
+                   timeUnit = 3, 
+                   bdc = 2, 
+                   emr = TRUE)</code></pre>
+<pre><code>## [1] &quot;2020-05-29&quot;</code></pre>
+<p>It is extremely simple for us to extend this for all the future dates in the next 7 years, using the <em>purrr</em> function <code>map_dbl</code>. We also prepend the starting date of the swap.</p>
+<pre class="r"><code>library(magrittr)
+Start_Date &lt;- lubridate::ymd(20190531)
+Swap_Dates &lt;- purrr::map_dbl(1:7,~RQuantLib::advance(calendar = &quot;UnitedStates&quot;,
+                                       dates = Start_Date,
+                                       n = .x, 
+                                       timeUnit = 3, 
+                                       bdc = 2, 
+                                       emr = TRUE)) %&gt;% 
+  lubridate::as_date() %&gt;% 
+  append(Start_Date, ., after = 1)
+
+Swap_Dates</code></pre>
+<pre><code>## [1] &quot;2019-05-31&quot; &quot;2020-05-29&quot; &quot;2021-05-28&quot; &quot;2022-05-31&quot; &quot;2023-05-31&quot;
+## [6] &quot;2024-05-31&quot; &quot;2025-05-30&quot; &quot;2026-05-29&quot;</code></pre>
+<p>You can immediately see that the <code>advance</code> function automatically manages the weekends adjusting the final dates.</p>
+<p>We should now convert these dates into time to maturities by using the day count convention ACT/360 (value 0 for the <code>DayCounter</code> parameter in the function). Again, I use the <strong>RQuantLib</strong> function <code>yearFraction</code> in conjunction with the <em>map_dbl</em> to programatically operate on all the dates as follows:</p>
+<pre class="r"><code>Swap &lt;- purrr::map_dbl(Swap_Dates, ~RQuantLib::yearFraction(Today, .x, 0)) %&gt;% 
+  tibble::tibble(Swap_YF = .)</code></pre>
+<p>We now interpolate the original discount factor curve linearly over these year fractions. We use the <code>approx</code> function together with the <code>pluck</code> one from <strong>purrr</strong> as follows:</p>
+<pre class="r"><code>Swap %&lt;&gt;% 
+  dplyr::mutate(DF = approx(DF_Table$T2M, DF_Table$DF, .$Swap_YF) %&gt;% 
+                  purrr::pluck(&quot;y&quot;))</code></pre>
+<p>We can now price the swap rate using the <strong>old fashion</strong> formula which can be found <a href="https://en.wikipedia.org/wiki/Interest_rate_swap">here</a>.</p>
+<p>We code the formula in the following function:</p>
+<pre class="r"><code>OLD_Swap_Rate_Calculation &lt;- function(Swap){
+  num &lt;- (Swap$DF[1] - Swap$DF[dim(Swap)[1]])
+  annuity &lt;- (sum(diff(Swap$Swap_YF)*Swap$DF[2:dim(Swap)[1]]))
+  return(num/annuity)
+}
+
+OLD_Swap_Rate_Calculation(Swap)</code></pre>
+<pre><code>## [1] 0.02500193</code></pre>
+<p>Having the forward exactly equal to 2.5% (net of a small effect due to the ACT/360 day count convention) confirms that the calculation is performed correctly.</p>
+<p>Below you can find the code in its entirety (we using the ACT/ACT day count convention to show that the actual result is equal to 2.5% to 1/1000th of bp):</p>
+<pre class="r"><code>## Interest Rate Setting
+Today &lt;- lubridate::ymd(20190329) # curve snap date
+R &lt;- 0.025 # zero rate
+T2M &lt;- seq(0,10) # sequential time to maturity
+DF &lt;- 1/(1 + R)^T2M # discount factors
+DF_Table &lt;- tibble::tibble(T2M = T2M, DF = DF) # discount factors table
+
+## Swap Pricing
+Swap_Start_Date &lt;- lubridate::ymd(20190531)
+Swap_Rate &lt;- purrr::map_dbl(1:7,~RQuantLib::advance(calendar = &quot;UnitedStates&quot;,
+                                       dates = Swap_Start_Date,
+                                       n = .x, 
+                                       timeUnit = 3, 
+                                       bdc = 2, 
+                                       emr = TRUE)) %&gt;% 
+  lubridate::as_date() %&gt;% 
+  append(Swap_Start_Date, ., after = 1) %&gt;% 
+  purrr::map_dbl(~RQuantLib::yearFraction(Today, .x, 2)) %&gt;% 
+  tibble::tibble(Swap_YF = .) %&gt;% 
+  dplyr::mutate(DF = approx(DF_Table$T2M, DF_Table$DF, .$Swap_YF) %&gt;% 
+                  purrr::pluck(&quot;y&quot;)) %&gt;% 
+  OLD_Swap_Rate_Calculation
+
+Swap_Rate</code></pre>
+<pre><code>## [1] 0.02499993</code></pre>
+<p>You can notice how easy it was to price the swap using only 5 tidyverse functions, 2 RQuantLib ones and a bespoke one!</p>
+</div>
+<div id="spoiler-on-the-next-post" class="section level3">
+<h3>Spoiler on the next post</h3>
+<p>The function we described will be the starting point for the natural extension of the study:</p>
+<ul>
+<li>we will use a real market consistent discount factor curve to test the pricing and</li>
+<li>we will programatically extend the function for it to price potentially an infinite number of contracts at the same time</li>
+</ul>
+</div>

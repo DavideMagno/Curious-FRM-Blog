@@ -1,0 +1,141 @@
+---
+title: "Using the tidyverse for swap pricing"
+author: "Davide Magno"
+date: '2019-03-31'
+categories: [Finance]
+tags: [R, Interest Rates, RQuantLib, Purrr]
+---
+
+### Introduction
+
+I am a big passionate of the **tidyverse** packages: I think they make the code very clean and clear. In particular, I like the **lubridate** packages for managing and making operations with dates but its major drawback is that it doesn't manage financial holidays, which are key when projecting financial cashflows linked to instruments like interest rte swaps.
+
+In this case, I prefer to use the **RQuantLib** package.
+
+I will show how these packages can interact quite well by pricing a simple 7 years forward starting interest rate swap.
+
+### A simplified interest rate environment
+
+Let's firstly define a **simplified** market with flat *zero rates* at 2.5% (after all, not much different to the USD swap curve at the time of writing this post).
+
+The discount factors formula can be found [here](https://en.wikipedia.org/wiki/Discounting#cite_note-Economics_Discount-2) and it is used as per the code below:
+
+```{r}
+Today <- lubridate::ymd(20190329) # curve snap date
+R <- 0.025 # zero rate
+T2M <- seq(0,10) # sequential time to maturity
+DF <- 1/(1 + R)^T2M # discount factors
+DF_Table <- tibble::tibble(T2M = T2M, DF = DF) # discount factors table
+```
+
+### Pricing a forward starting swap
+
+Let's now consider a forward starting swap that settles on the 31st of May 2019 and that has got 7 years of maturity.
+
+The `advance` function in the **RQuantLib** package allows to calculate a date in the future given:
+
+  * a calendar with the set of holidays well defined
+  * a starting date
+  * the number of time units to move forward
+  * the basic time unit to move forward (days, weeks, months...)
+  * a business day convention (please refer to the help page of the function for more info `?RQuantLib::advance` )
+  * whether the end-of-month rule applies (ie. if the starting date is the last business date of the month and the time unit is monthly or yearly, the forward date has to be the last date of the target month, net of business day adjustment)
+  
+The code below shows how to use this function:
+
+```{r}
+RQuantLib::advance(calendar = "UnitedStates", 
+                   dates = lubridate::ymd(20190531), 
+                   n = 1, 
+                   timeUnit = 3, 
+                   bdc = 2, 
+                   emr = TRUE)
+```
+
+It is extremely simple for us to extend this for all the future dates in the next 7 years, using the *purrr* function `map_dbl`. We also prepend the starting date of the swap.
+
+```{r}
+library(magrittr)
+Start_Date <- lubridate::ymd(20190531)
+Swap_Dates <- purrr::map_dbl(1:7,~RQuantLib::advance(calendar = "UnitedStates",
+                                       dates = Start_Date,
+                                       n = .x, 
+                                       timeUnit = 3, 
+                                       bdc = 2, 
+                                       emr = TRUE)) %>% 
+  lubridate::as_date() %>% 
+  append(Start_Date, ., after = 1)
+
+Swap_Dates
+```
+
+You can immediately see that the `advance` function automatically manages the weekends adjusting the final dates.
+
+We should now convert these dates into time to maturities by using the day count convention ACT/360 (value 0 for the `DayCounter` parameter in the function). Again, I use the **RQuantLib** function `yearFraction` in conjunction with the *map_dbl* to programatically operate on all the dates as follows:
+```{r}
+Swap <- purrr::map_dbl(Swap_Dates, ~RQuantLib::yearFraction(Today, .x, 0)) %>% 
+  tibble::tibble(Swap_YF = .)
+```
+
+We now interpolate the original discount factor curve linearly over these year fractions. We use the `approx` function together with the `pluck` one from **purrr** as follows:
+
+```{r}
+Swap %<>% 
+  dplyr::mutate(DF = approx(DF_Table$T2M, DF_Table$DF, .$Swap_YF) %>% 
+                  purrr::pluck("y"))
+```
+
+We can now price the swap rate using the **old fashion** formula which can be found [here](https://en.wikipedia.org/wiki/Interest_rate_swap).
+
+We code the formula in the following function:
+
+```{r}
+OLD_Swap_Rate_Calculation <- function(Swap){
+  num <- (Swap$DF[1] - Swap$DF[dim(Swap)[1]])
+  annuity <- (sum(diff(Swap$Swap_YF)*Swap$DF[2:dim(Swap)[1]]))
+  return(num/annuity)
+}
+
+OLD_Swap_Rate_Calculation(Swap)
+```
+Having the forward exactly equal to 2.5% (net of a small effect due to the ACT/360 day count convention) confirms that the calculation is performed correctly.
+
+Below you can find the code in its entirety (we using the ACT/ACT day count convention to show that the actual result is equal to 2.5% to 1/1000th of bp):
+
+```{r}
+## Interest Rate Setting
+Today <- lubridate::ymd(20190329) # curve snap date
+R <- 0.025 # zero rate
+T2M <- seq(0,10) # sequential time to maturity
+DF <- 1/(1 + R)^T2M # discount factors
+DF_Table <- tibble::tibble(T2M = T2M, DF = DF) # discount factors table
+
+## Swap Pricing
+Swap_Start_Date <- lubridate::ymd(20190531)
+Swap_Rate <- purrr::map_dbl(1:7,~RQuantLib::advance(calendar = "UnitedStates",
+                                       dates = Swap_Start_Date,
+                                       n = .x, 
+                                       timeUnit = 3, 
+                                       bdc = 2, 
+                                       emr = TRUE)) %>% 
+  lubridate::as_date() %>% 
+  append(Swap_Start_Date, ., after = 1) %>% 
+  purrr::map_dbl(~RQuantLib::yearFraction(Today, .x, 2)) %>% 
+  tibble::tibble(Swap_YF = .) %>% 
+  dplyr::mutate(DF = approx(DF_Table$T2M, DF_Table$DF, .$Swap_YF) %>% 
+                  purrr::pluck("y")) %>% 
+  OLD_Swap_Rate_Calculation
+
+Swap_Rate
+```
+
+You can notice how easy it was to price the swap using only 5 tidyverse functions, 2 RQuantLib ones and a bespoke one!
+
+### Spoiler on the next post
+
+The function we described will be the starting point for the natural extension of the study:
+
+  * we will use a real market consistent discount factor curve to test the pricing and
+  * we will programatically extend the function for it to price potentially an infinite number of contracts at the same time
+  
+
