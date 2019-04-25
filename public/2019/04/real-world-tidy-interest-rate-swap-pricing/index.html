@@ -78,12 +78,12 @@ Import the discount factors from Bloomberg Let’s start the pricing of the swap
 
     <title>Real world tidy interest rate swap pricing</title>
 
-    <link rel="icon" href="/favicon.png">
+    <link rel="icon" href="../../../favicon.png">
     
 
     
 
-    <link rel="canonical" href="/2019/04/real-world-tidy-interest-rate-swap-pricing/">
+    <link rel="canonical" href="../../../2019/04/real-world-tidy-interest-rate-swap-pricing/">
 
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
@@ -91,7 +91,7 @@ Import the discount factors from Bloomberg Let’s start the pricing of the swap
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/helpers/jquery.fancybox-thumbs.min.css" integrity="sha256-SEa4XYAHihTcEP1f5gARTB2K26Uk8PsndQYHQC1f4jU=" crossorigin="anonymous" />
     
     
-    <link rel="stylesheet" href="/css/style-nnm2spxvve8onlujjlegkkytaehyadd4ksxc1hyzzq9a2wvtrgbljqyulomn.min.css" />
+    <link rel="stylesheet" href="../../../css/style-nnm2spxvve8onlujjlegkkytaehyadd4ksxc1hyzzq9a2wvtrgbljqyulomn.min.css" />
     
     
 
@@ -119,12 +119,12 @@ if (!doNotTrack) {
       <header id="header" data-behavior="5">
   <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
   <div class="header-title">
-    <a class="header-title-link" href="/">The CuRious Financial Risk ManageR</a>
+    <a class="header-title-link" href="../../../">The CuRious Financial Risk ManageR</a>
   </div>
   
     
       <a class="header-right-picture "
-         href="/#about">
+         href="../../../#about">
     
     
     
@@ -140,7 +140,7 @@ if (!doNotTrack) {
   <div class="sidebar-container">
     
       <div class="sidebar-profile">
-        <a href="/#about">
+        <a href="../../../#about">
           <img class="sidebar-profile-picture" src="https://www.gravatar.com/avatar/c1105417b6cb80bccd4bb80937e0ec69?s=110" alt="Author&#39;s picture" />
         </a>
         <h4 class="sidebar-profile-name">Davide Magno</h4>
@@ -153,7 +153,7 @@ if (!doNotTrack) {
       
   <li class="sidebar-button">
     
-      <a class="sidebar-button-link " href="/">
+      <a class="sidebar-button-link " href="../../../">
     
       <i class="sidebar-button-icon fa fa-lg fa-home"></i>
       
@@ -173,7 +173,7 @@ if (!doNotTrack) {
 
   <li class="sidebar-button">
     
-      <a class="sidebar-button-link " href="/#about/">
+      <a class="sidebar-button-link " href="../../../#about/">
     
       <i class="sidebar-button-icon fa fa-lg fa-question"></i>
       
@@ -221,7 +221,7 @@ if (!doNotTrack) {
       
   <li class="sidebar-button">
     
-      <a class="sidebar-button-link " href="/categories">
+      <a class="sidebar-button-link " href="../../../categories">
     
       <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
       
@@ -231,7 +231,7 @@ if (!doNotTrack) {
 
   <li class="sidebar-button">
     
-      <a class="sidebar-button-link " href="/tags">
+      <a class="sidebar-button-link " href="../../../tags">
     
       <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
       
@@ -241,7 +241,7 @@ if (!doNotTrack) {
 
   <li class="sidebar-button">
     
-      <a class="sidebar-button-link " href="/index.xml">
+      <a class="sidebar-button-link " href="../../../index.xml">
     
       <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
       
@@ -298,7 +298,7 @@ if (!doNotTrack) {
   
     <span>in</span>
     
-      <a class="category-link" href="/categories/finance">Finance</a>
+      <a class="category-link" href="../../../categories/finance">Finance</a>
     
   
 
@@ -309,7 +309,7 @@ if (!doNotTrack) {
           <div class="post-content markdown" itemprop="articleBody">
             <div class="main-content-wrap">
               
-<script src="/rmarkdown-libs/kePrint/kePrint.js"></script>
+<script src="../../../rmarkdown-libs/kePrint/kePrint.js"></script>
 
 
 <p>In this post I will show how easy is to price a portfolio of swaps leveraging the <strong>purrr</strong> package and given the swap pricing functions that we introduced in a <a href="https://www.curiousfrm.com/2019/03/using-the-tidyverse-for-swap-pricing/">previous post</a>. I will do this in a “real world” environment hence using real market data as per the last 14th of April.</p>
@@ -317,7 +317,7 @@ if (!doNotTrack) {
 <div id="import-the-discount-factors-from-bloomberg" class="section level3">
 <h3>Import the discount factors from Bloomberg</h3>
 <p>Let’s start the pricing of the swap portfolio with purrr by loading from an external source the EUR discount factor curve. My source is <em>Bloomberg</em> and in particular the <em>SWPM</em> page, which allows all the Bloomberg users to price interest rate sensitive instruments. It also contains a tab with the curve information, which is the source of my curve. It is partly represented in the screenshot below and also as per the following table.</p>
-<p><img src="/post/2019-04-24-real-world-tidy-interest-rate-swap-pricing_files/SWPM%20screenshot.png" /></p>
+<p><img src="../../../post/2019-04-24-real-world-tidy-interest-rate-swap-pricing_files/SWPM%20screenshot.png" /></p>
 <pre class="r"><code>today &lt;- lubridate::ymd(20190414)
 
 ir_curve &lt;- readr::read_csv(here::here(&quot;data/Basket of IRS/Curve at 140419.csv&quot;))
@@ -976,7 +976,7 @@ ggplot2::ggplot(df.table, ggplot2::aes(x = t2m, y = df)) +
   ggplot2::ggtitle(&quot;Discount Factor curve at 14th of April 2019&quot;) +
   ggplot2::xlab(&quot;Time to maturity&quot;) +
   ggplot2::ylab(&quot;Discount Factor&quot;)</code></pre>
-<p><img src="/post/2019-04-24-real-world-tidy-interest-rate-swap-pricing_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p><img src="../../../post/2019-04-24-real-world-tidy-interest-rate-swap-pricing_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 </div>
 <div id="interest-rate-swap-pricing-functions" class="section level3">
 <h3>Interest Rate Swap pricing functions</h3>
@@ -1096,7 +1096,7 @@ SwapPricing(today, swap.25y, df.table)</code></pre>
 ## $pv01
 ## [1] 12393.65</code></pre>
 <p>We can compare the results with the actual Bloomberg output:</p>
-<p><img src="/post/2019-04-24-real-world-tidy-interest-rate-swap-pricing_files/Pricing%2025%20years%20swap.png" /></p>
+<p><img src="../../../post/2019-04-24-real-world-tidy-interest-rate-swap-pricing_files/Pricing%2025%20years%20swap.png" /></p>
 <p>You can notice that:</p>
 <ul>
 <li>the par rate is exact to less than 1bp</li>
@@ -1251,15 +1251,15 @@ swap.2y.16y
                   <div class="post-footer-tags">
                     <span class="text-color-light text-small">TAGGED IN</span><br/>
                     
-  <a class="tag tag--primary tag--small" href="/tags/coding/">Coding</a>
+  <a class="tag tag--primary tag--small" href="../../../tags/coding/">Coding</a>
 
-  <a class="tag tag--primary tag--small" href="/tags/r/">R</a>
+  <a class="tag tag--primary tag--small" href="../../../tags/r/">R</a>
 
-  <a class="tag tag--primary tag--small" href="/tags/rquantlib/">RQuantLib</a>
+  <a class="tag tag--primary tag--small" href="../../../tags/rquantlib/">RQuantLib</a>
 
-  <a class="tag tag--primary tag--small" href="/tags/purrr/">Purrr</a>
+  <a class="tag tag--primary tag--small" href="../../../tags/purrr/">Purrr</a>
 
-  <a class="tag tag--primary tag--small" href="/tags/tidy/">Tidy</a>
+  <a class="tag tag--primary tag--small" href="../../../tags/tidy/">Tidy</a>
 
                   </div>
                 
@@ -1280,7 +1280,7 @@ swap.2y.16y
             </li>
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--default tooltip--top" href="/2019/03/using-the-tidyverse-for-swap-pricing/" data-tooltip="Using the tidyverse for swap pricing">
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2019/03/using-the-tidyverse-for-swap-pricing/" data-tooltip="Using the tidyverse for swap pricing">
               
                   <span class="hide-xs hide-sm text-small icon-mr">PREVIOUS</span>
                   <i class="fa fa-angle-right"></i>
@@ -1360,7 +1360,7 @@ swap.2y.16y
             </li>
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--default tooltip--top" href="/2019/03/using-the-tidyverse-for-swap-pricing/" data-tooltip="Using the tidyverse for swap pricing">
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2019/03/using-the-tidyverse-for-swap-pricing/" data-tooltip="Using the tidyverse for swap pricing">
               
                   <span class="hide-xs hide-sm text-small icon-mr">PREVIOUS</span>
                   <i class="fa fa-angle-right"></i>
@@ -1481,7 +1481,7 @@ swap.2y.16y
           <div class="media">
             
             <div class="media-body">
-              <a class="link-unstyled" href="/2019/04/real-world-tidy-interest-rate-swap-pricing/">
+              <a class="link-unstyled" href="../../../2019/04/real-world-tidy-interest-rate-swap-pricing/">
                 <h3 class="media-heading">Real world tidy interest rate swap pricing</h3>
               </a>
               <span class="media-meta">
@@ -1499,7 +1499,7 @@ Import the discount factors from Bloomberg Let’s start the pricing of the swap
           <div class="media">
             
             <div class="media-body">
-              <a class="link-unstyled" href="/2019/03/using-the-tidyverse-for-swap-pricing/">
+              <a class="link-unstyled" href="../../../2019/03/using-the-tidyverse-for-swap-pricing/">
                 <h3 class="media-heading">Using the tidyverse for swap pricing</h3>
               </a>
               <span class="media-meta">
@@ -1517,7 +1517,7 @@ In this case, I prefer to use the RQuantLib package.</div>
           <div class="media">
             
             <div class="media-body">
-              <a class="link-unstyled" href="/2019/02/us-federal-spending-analysis/">
+              <a class="link-unstyled" href="../../../2019/02/us-federal-spending-analysis/">
                 <h3 class="media-heading">US Federal Spending Analysis</h3>
               </a>
               <span class="media-meta">
@@ -1535,7 +1535,7 @@ In this case, I prefer to use the RQuantLib package.</div>
           <div class="media">
             
             <div class="media-body">
-              <a class="link-unstyled" href="/2019/02/geospatial-analysis-on-housing-price-index/">
+              <a class="link-unstyled" href="../../../2019/02/geospatial-analysis-on-housing-price-index/">
                 <h3 class="media-heading">Geospatial Analysis on Housing Price Index</h3>
               </a>
               <span class="media-meta">
@@ -1553,7 +1553,7 @@ In this case, I prefer to use the RQuantLib package.</div>
           <div class="media">
             
             <div class="media-body">
-              <a class="link-unstyled" href="/2019/02/my-first-tidytuesday-submission/">
+              <a class="link-unstyled" href="../../../2019/02/my-first-tidytuesday-submission/">
                 <h3 class="media-heading">My First #TidyTuesday Submission</h3>
               </a>
               <span class="media-meta">
@@ -1571,7 +1571,7 @@ In this case, I prefer to use the RQuantLib package.</div>
           <div class="media">
             
             <div class="media-body">
-              <a class="link-unstyled" href="/2018/02/convert-foreign-currency-valuations/">
+              <a class="link-unstyled" href="../../../2018/02/convert-foreign-currency-valuations/">
                 <h3 class="media-heading">Convert foreign currency valuations</h3>
               </a>
               <span class="media-meta">
@@ -1590,7 +1590,7 @@ The principle of the solution is that converting each currency can be done in pa
           <div class="media">
             
             <div class="media-body">
-              <a class="link-unstyled" href="/2018/01/generate-scenarios-correlated-to-existing-ones/">
+              <a class="link-unstyled" href="../../../2018/01/generate-scenarios-correlated-to-existing-ones/">
                 <h3 class="media-heading">Generate scenarios correlated to existing ones</h3>
               </a>
               <span class="media-meta">
@@ -1634,7 +1634,7 @@ For example, let’s suppose that we receive the expected returns of the Google 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.7/js/jquery.fancybox.min.js" integrity="sha256-GEAnjcTqVP+vBp3SSc8bEDQqvWAZMiHyUSIorrWwH50=" crossorigin="anonymous"></script>
 
 
-<script src="/js/script-qi9wbxp2ya2j6p7wx1i6tgavftewndznf4v0hy2gvivk1rxgc3lm7njqb6bz.min.js"></script>
+<script src="../../../js/script-qi9wbxp2ya2j6p7wx1i6tgavftewndznf4v0hy2gvivk1rxgc3lm7njqb6bz.min.js"></script>
 
 
 <script lang="javascript">
