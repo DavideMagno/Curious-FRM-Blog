@@ -13,8 +13,6 @@ tags:
   - Tidy
 keywords:
   - tech
-thumbnailImagePosition: right
-thumbnailImage: /post/2019-04-24-real-world-tidy-interest-rate-swap-pricing_files/figure-html/unnamed-chunk-3-1.png
 ---
 
 In this post I will show how easy is to price a portfolio of swaps leveraging the **purrr** package and given the swap pricing functions that we introduced in a [previous post](https://www.curiousfrm.com/2019/03/using-the-tidyverse-for-swap-pricing/). I will do this in a "real world" environment hence using real market data as per the last 14th of April.
