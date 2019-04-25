@@ -14,7 +14,7 @@
 
 baseURL = "https://www.curiousfrm.com/"
 ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
-relativeURLs = true
+relativeURLs = false
 enableEmoji = true
 languageCode = "en-us"
 defaultContentLanguage = "en-us"

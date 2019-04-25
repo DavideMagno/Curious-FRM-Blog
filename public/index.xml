@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>The CuRious Financial Risk ManageR</title>
@@ -18,7 +17,7 @@
       
       <guid>/2019/04/real-world-tidy-interest-rate-swap-pricing/</guid>
       <description>
-&lt;script src=&#34;./rmarkdown-libs/kePrint/kePrint.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;/rmarkdown-libs/kePrint/kePrint.js&#34;&gt;&lt;/script&gt;
 
 
 &lt;p&gt;In this post I will show how easy is to price a portfolio of swaps leveraging the &lt;strong&gt;purrr&lt;/strong&gt; package and given the swap pricing functions that we introduced in a &lt;a href=&#34;https://www.curiousfrm.com/2019/03/using-the-tidyverse-for-swap-pricing/&#34;&gt;previous post&lt;/a&gt;. I will do this in a “real world” environment hence using real market data as per the last 14th of April.&lt;/p&gt;
@@ -26,7 +25,7 @@
 &lt;div id=&#34;import-the-discount-factors-from-bloomberg&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Import the discount factors from Bloomberg&lt;/h3&gt;
 &lt;p&gt;Let’s start the pricing of the swap portfolio with purrr by loading from an external source the EUR discount factor curve. My source is &lt;em&gt;Bloomberg&lt;/em&gt; and in particular the &lt;em&gt;SWPM&lt;/em&gt; page, which allows all the Bloomberg users to price interest rate sensitive instruments. It also contains a tab with the curve information, which is the source of my curve. It is partly represented in the screenshot below and also as per the following table.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;./post/2019-04-24-real-world-tidy-interest-rate-swap-pricing_files/SWPM%20screenshot.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2019-04-24-real-world-tidy-interest-rate-swap-pricing_files/SWPM%20screenshot.png&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;today &amp;lt;- lubridate::ymd(20190414)
 
 ir_curve &amp;lt;- readr::read_csv(here::here(&amp;quot;data/Basket of IRS/Curve at 140419.csv&amp;quot;))
@@ -685,7 +684,7 @@ ggplot2::ggplot(df.table, ggplot2::aes(x = t2m, y = df)) +
   ggplot2::ggtitle(&amp;quot;Discount Factor curve at 14th of April 2019&amp;quot;) +
   ggplot2::xlab(&amp;quot;Time to maturity&amp;quot;) +
   ggplot2::ylab(&amp;quot;Discount Factor&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;./post/2019-04-24-real-world-tidy-interest-rate-swap-pricing_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2019-04-24-real-world-tidy-interest-rate-swap-pricing_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;interest-rate-swap-pricing-functions&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Interest Rate Swap pricing functions&lt;/h3&gt;
@@ -805,7 +804,7 @@ SwapPricing(today, swap.25y, df.table)&lt;/code&gt;&lt;/pre&gt;
 ## $pv01
 ## [1] 12393.65&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;We can compare the results with the actual Bloomberg output:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;./post/2019-04-24-real-world-tidy-interest-rate-swap-pricing_files/Pricing%2025%20years%20swap.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2019-04-24-real-world-tidy-interest-rate-swap-pricing_files/Pricing%2025%20years%20swap.png&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;You can notice that:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;the par rate is exact to less than 1bp&lt;/li&gt;
@@ -1213,7 +1212,7 @@ ggplot(data = google, aes(x = google_returns)) +
         subtitle = &amp;quot;One Year forward distribution&amp;quot;) +
   xlab(&amp;quot;One year forward return&amp;quot;) + 
   ylab(&amp;quot;Density&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;./post/22_01_2018_simulations_files/figure-html/Google-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/22_01_2018_simulations_files/figure-html/Google-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;We now want to simulate the distribution of another risk factor which is not provided by the third party but that is usefull for us. Let’s say it is the distribution of the Facebook shares which we imagine to:&lt;/p&gt;
 &lt;ol style=&#34;list-style-type: decimal&#34;&gt;
 &lt;li&gt;be distributed as a normal random variable&lt;/li&gt;
@@ -1233,7 +1232,7 @@ ggplot(data = fb, aes(x = fb_returns)) +
         subtitle = &amp;quot;One Year forward distribution&amp;quot;) +
   xlab(&amp;quot;One year forward return&amp;quot;) + 
   ylab(&amp;quot;Density&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;./post/22_01_2018_simulations_files/figure-html/Facebook-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/22_01_2018_simulations_files/figure-html/Facebook-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Let’s now look at the correlation between the two variables:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;Returns &amp;lt;- google %&amp;gt;% 
   cbind(fb) %&amp;gt;% 
@@ -1242,7 +1241,7 @@ ggplot(data = fb, aes(x = fb_returns)) +
 ## This warning is displayed once per session.&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cor(Returns$fb_returns, Returns$google_returns)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## [1] 0.0166395&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;./post/22_01_2018_simulations_files/figure-html/Correlation_graph-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/22_01_2018_simulations_files/figure-html/Correlation_graph-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;We can notice that performing the simple simulation doesn’t allow us to impose a correlation structure with the data provided by the third party provider.&lt;/p&gt;
 &lt;p&gt;How can we generate a random variable with a defined correlation to an existing one?
 A very elegant solution was provided by user &lt;strong&gt;whuber&lt;/strong&gt; at the following link &lt;a href=&#34;https://stats.stackexchange.com/a/313138&#34; class=&#34;uri&#34;&gt;https://stats.stackexchange.com/a/313138&lt;/a&gt; and by using the following function&lt;/p&gt;
@@ -1258,7 +1257,7 @@ A very elegant solution was provided by user &lt;strong&gt;whuber&lt;/strong&gt;
 
 cor(Returns$google_returns, Returns$fb_correlated)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## [1] 0.8&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;./post/22_01_2018_simulations_files/figure-html/Add_Correlation_Graph-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/22_01_2018_simulations_files/figure-html/Add_Correlation_Graph-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;There is just one last thing to do: compare the distributions of the two Facebook simulations&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;Returns %&amp;gt;% 
   select(contains(&amp;quot;fb&amp;quot;)) %&amp;gt;% 
@@ -1269,7 +1268,7 @@ cor(Returns$google_returns, Returns$fb_correlated)&lt;/code&gt;&lt;/pre&gt;
   labs(title = &amp;quot;Facebook Shares&amp;#39; simulations&amp;quot;) +
   xlab(&amp;quot;One year forward return&amp;quot;) + 
   ylab(&amp;quot;Density&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;./post/22_01_2018_simulations_files/figure-html/unnamed-chunk-1-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/22_01_2018_simulations_files/figure-html/unnamed-chunk-1-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;We can notice that the marginal distribution of the correlated scenario is much different from the original one.&lt;/p&gt;
 &lt;p&gt;There is therefore one additional step before we finish: we need to rescale the marginal distribution.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;Rescaled_fb_correlated &amp;lt;- Returns %&amp;gt;%
@@ -1290,7 +1289,7 @@ Returns %&amp;lt;&amp;gt;%
   labs(title = &amp;quot;Facebook Shares&amp;#39; simulations&amp;quot;) +
   xlab(&amp;quot;One year forward return&amp;quot;) + 
   ylab(&amp;quot;Density&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;./post/22_01_2018_simulations_files/figure-html/unnamed-chunk-2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/22_01_2018_simulations_files/figure-html/unnamed-chunk-2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cor(Returns$google_returns, Returns$fb_correlated)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## [1] 0.8&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The new Facebook scenario is now both correlated and in line with the density we want.&lt;/p&gt;
