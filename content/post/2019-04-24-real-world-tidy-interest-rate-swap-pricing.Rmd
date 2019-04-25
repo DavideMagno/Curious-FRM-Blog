@@ -1,0 +1,259 @@
+---
+title: Real world tidy interest rate swap pricing
+author: Davide Magno
+date: '2019-04-25'
+slug: real-world-tidy-interest-rate-swap-pricing
+categories:
+  - Finance
+tags:
+  - Coding
+  - R
+  - RQuantLib
+  - Purrr
+  - Tidy
+keywords:
+  - tech
+thumbnailImagePosition: right
+thumbnailImage: /post/2019-04-24-real-world-tidy-interest-rate-swap-pricing_files/figure-html/unnamed-chunk-3-1.png
+---
+
+In this post I will show how easy is to price a portfolio of swaps leveraging the **purrr** package and given the swap pricing functions that we introduced in a [previous post](https://www.curiousfrm.com/2019/03/using-the-tidyverse-for-swap-pricing/). I will do this in a "real world" environment hence using real market data as per the last 14th of April.
+
+<!-- more -->
+
+### Import the discount factors from Bloomberg
+
+Let's start the pricing of the swap portfolio with purrr by loading from an external source the EUR discount factor curve. My source is *Bloomberg* and in particular the *SWPM* page, which allows all the Bloomberg users to price interest rate sensitive instruments. It also contains a tab with the curve information, which is the source of my curve. It is partly represented in the screenshot below and also as per the following table.
+
+![](/post/2019-04-24-real-world-tidy-interest-rate-swap-pricing_files/SWPM screenshot.png)
+
+```{r, echo = FALSE}
+`%>%` <- magrittr::`%>%`
+`%<>%` <- magrittr::`%<>%`
+```
+
+```{r, message = FALSE, warning = FALSE}
+today <- lubridate::ymd(20190414)
+
+ir_curve <- readr::read_csv(here::here("data/Basket of IRS/Curve at 140419.csv"))
+
+ir_curve %>% 
+  knitr::kable(caption = "Input from Bloomberg", "html") %>% 
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive")) %>% 
+  kableExtra::scroll_box(width = "750px", height = "200px")
+
+```
+
+We now wrangle this data in order to get a two columns tibble containing the time to maturity and the discount factors for each pillar points on the curve. We us a *30/360* day count convention because it is the standard for the EUR swaps.
+
+```{r, message = FALSE, warning = FALSE}
+df.table <- ir_curve %>% 
+  dplyr::mutate(`Maturity Date` = lubridate::mdy(`Maturity Date`)) %>% 
+  dplyr::rowwise(.) %>% 
+  dplyr::mutate(t2m = RQuantLib::yearFraction(today, `Maturity Date`, 6)) %>% 
+  na.omit %>% 
+  dplyr::select(t2m, Discount) %>%
+  dplyr::rename(df = Discount) %>% 
+  dplyr::ungroup(.) %>% 
+  dplyr::bind_rows(c(t2m = 0,df = 1)) %>% 
+  dplyr::arrange(t2m)
+
+ggplot2::ggplot(df.table, ggplot2::aes(x = t2m, y = df)) + 
+  ggplot2::geom_point() +
+  ggplot2::geom_line(colour = "blue") +
+  ggplot2::ggtitle("Discount Factor curve at 14th of April 2019") +
+  ggplot2::xlab("Time to maturity") +
+  ggplot2::ylab("Discount Factor")
+```
+
+### Interest Rate Swap pricing functions
+I am now going to re-use the pricing functions that have been already described in a [previous post](https://www.curiousfrm.com/2019/03/using-the-tidyverse-for-swap-pricing/). I have  tidied them up a bit and given proper names, but the description still fully holds.
+
+Let's start from the one that calculates the swap cashflows.
+```{r, message = FALSE, warning = FALSE}
+SwapCashflowYFCalculation  <- function(today, start.date, maturity.date,
+                                       time.unit, dcc, calendar) {
+  0:((lubridate::year(maturity.date) - lubridate::year(start.date)) *
+       (4 - time.unit)) %>% 
+    purrr::map_dbl(~RQuantLib::advance(calendar = calendar,
+                                       dates = start.date,
+                                       n = .x,
+                                       timeUnit = time.unit,
+                                       bdc = 1,
+                                       emr = TRUE)) %>%
+    lubridate::as_date() %>%
+    {if (start.date < today) append(today, .) else .} %>%
+    purrr::map_dbl(~RQuantLib::yearFraction(today, .x, dcc)) %>% 
+    tibble::tibble(yf = .) 
+}
+```
+
+You may have noticed that I added one row `{if (start.date < today) append(today, .) else .}`. This allows to properly manage the pricing of swaps with a starting date before today.
+
+
+I now proceed with calculating the actual par swap rate, which is a key input to the pricing formula. You can notice in the function below that I use a linear interpolation on the log of the discount factors. This is in line with one of the Bloomberg options. It is proven that it:
+
+  1. provides step constant forward rates
+  2. locally stabilises the bucketed sensitivities
+  
+Also the (old) swap rate pricing function is the same, we only filter for future cashflows as we want to be able to price swaps with a starting date before today.
+
+```{r, message = FALSE, warning = FALSE}
+OLDParSwapRate <- function(swap.cf){
+  swap.cf %<>% 
+    dplyr::filter(yf >= 0)
+    
+  num <- (swap.cf$df[1] - swap.cf$df[dim(swap.cf)[1]])
+  annuity <- (sum(diff(swap.cf$yf)*swap.cf$df[2:dim(swap.cf)[1]]))
+  return(list(swap.rate = num/annuity,
+              annuity = annuity))
+}
+
+ParSwapRateCalculation <- function(swap.cf.yf, df.table) {
+  swap.cf.yf  %>% 
+    dplyr::mutate(df = approx(df.table$t2m, log(df.table$df), .$yf) %>%
+                    purrr::pluck("y") %>% 
+                    exp) %>%
+    OLDParSwapRate
+}
+```
+
+I now want to introduce two new functions which are needed for calculating the actual market values:
+
+  * the first one extracts the year fraction for the accrual calculation
+* the second one calculates the main characteristics of a swap:
+  
+    + the par swap rate
+  + the pv01 (or analytic delta)
+  + the clean market value
+  + the accrual for the fixed rate leg
+
+I have defined a variable `direction` which represents the type of swap:
+
+  * if it is equal to `1` then it is a *receiver* swap
+* if it is equal to `-1` then it is a *payer* swap
+  
+```{r, message = FALSE, warning = FALSE}
+CalculateAccrual <- function(swap.cf){
+  swap.cf %>% 
+    dplyr::filter(yf < 0) %>% 
+    dplyr::select(yf) %>% 
+    dplyr::arrange(dplyr::desc(yf)) %>% 
+    dplyr::top_n(1) %>% 
+    as.double %>% 
+    {if (is.na(.)) 0 else .}
+}
+
+SwapCalculations <- function(swap.cf.yf, notional, strike, direction, df.table) {
+  swap.par.pricing <- ParSwapRateCalculation(swap.cf.yf, df.table)
+  
+  mv <- notional * swap.par.pricing$annuity * (strike - swap.par.pricing$swap.rate) *
+    direction
+    
+  accrual.fixed <- swap.cf.yf %>% 
+    CalculateAccrual %>% 
+    `*`(notional * strike * direction * -1)
+  
+  pv01 <- notional/10000 * swap.par.pricing$annuity * direction
+  
+  list(clean.mv = mv, accrual.fixed = accrual.fixed, par = swap.par.pricing$swap.rate, 
+       pv01 = pv01)
+}
+```
+
+We then put everything together with the following pricing pipe:
+
+```{r}
+SwapPricing <- function(today, swap, df.table) {
+  SwapCashflowYFCalculation(today, swap$start.date, 
+                                       swap$maturity.date, swap$time.unit, 
+                                       swap$dcc, swap$calendar) %>% 
+    SwapCalculations(swap$notional, swap$strike, swap$direction, df.table)
+}
+```
+
+### Pricing a swap
+
+It's showtime! :-) Let's test our pricing function on a swap that we define as a list. This is a EUR 10m notional receiver swap starting on the 19th of January 2007 with 25 years of maturity. The paying dates are calculated using the modified following rule and the day count convention is 30/360.
+
+```{r, message = FALSE}
+
+swap.25y <- list(notional = 10000000,
+                 start.date = lubridate::ymd(20070119),
+                 maturity.date = lubridate::ymd(20320119),
+                 strike = 0.00059820,
+                 direction = 1,
+                 time.unit = 3,
+                 dcc = 6,
+                 calendar = "TARGET")
+
+
+SwapPricing(today, swap.25y, df.table)
+```
+We can compare the results with the actual Bloomberg output:
+
+![](/post/2019-04-24-real-world-tidy-interest-rate-swap-pricing_files/Pricing 25 years swap.png)
+
+You can notice that:  
+
+  * the par rate is exact to less than 1bp
+* the clean market price difference is less than 0.2 dv01s
+  
+We can therefore say that the pricing functions have been validated. 
+
+### Pricing a basket of swaps
+
+With **purrr** it is **very** easy to vectorise the `SwapPricing` hence the pricing of a portfolio of swaps is seemingless. 
+
+I firstly have to define a number of different contracts, including a forward starting one.
+I then combine all of them in a list and let the power of `map.df` do the magic.
+
+```{r, message = FALSE}
+
+swap.30y <- list(notional = 10000000,
+                 start.date = lubridate::ymd(20120424),
+                 maturity.date = lubridate::ymd(20420424),
+                 strike = 0.01,
+                 direction = -1,
+                 time.unit = 3,
+                 dcc = 6,
+                 calendar = "TARGET")
+
+swap.10y <- list(notional = 20000000,
+                 start.date = lubridate::ymd(20120221),
+                 maturity.date = lubridate::ymd(20220221),
+                 strike = 0.0025,
+                 direction = 1,
+                 time.unit = 3,
+                 dcc = 6,
+                 calendar = "TARGET")
+
+swap.2y.16y <- list(notional = 7500000,
+                 start.date = lubridate::ymd(20210414),
+                 maturity.date = lubridate::ymd(20370414),
+                 strike = 0.015,
+                 direction = 1,
+                 time.unit = 3,
+                 dcc = 6,
+                 calendar = "TARGET")
+swaps <- list(swap.25y = swap.25y, swap.30y = swap.30y, swap.10y = swap.10y, 
+     swap.2y.16y = swap.2y.16y) 
+
+
+pricing.result <- swaps %>% 
+  purrr::map_df(~SwapPricing(today, .x, df.table)) %>% 
+  dplyr::mutate(swap.id = names(swaps)) %>% 
+  dplyr::select(swap.id, dplyr::everything())
+```
+
+
+```{r, echo = FALSE}
+pricing.result %>%
+  dplyr::mutate_at(dplyr::vars("clean.mv","accrual.fixed","pv01"),formattable::comma) %>%
+  dplyr::mutate_at(dplyr::vars("par"), formattable::percent) %>%
+  knitr::kable(caption = "Pricing results", "html") %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed","responsive"))
+```
+
+This is it for today. In the next post I will finish the pricing of this book of swaps calculating the accrual of the floating leg - which requires a bit of web scraping. Stay tuned.
+

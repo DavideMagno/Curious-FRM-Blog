@@ -6,10 +6,950 @@
     <description>Recent content in Purrr on The CuRious Financial Risk ManageR</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 31 Mar 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 25 Apr 2019 00:00:00 +0000</lastBuildDate>
     
         <atom:link href="/tags/purrr/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Real world tidy interest rate swap pricing</title>
+      <link>/2019/04/real-world-tidy-interest-rate-swap-pricing/</link>
+      <pubDate>Thu, 25 Apr 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/2019/04/real-world-tidy-interest-rate-swap-pricing/</guid>
+      <description>
+&lt;script src=&#34;/rmarkdown-libs/kePrint/kePrint.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;p&gt;In this post I will show how easy is to price a portfolio of swaps leveraging the &lt;strong&gt;purrr&lt;/strong&gt; package and given the swap pricing functions that we introduced in a &lt;a href=&#34;https://www.curiousfrm.com/2019/03/using-the-tidyverse-for-swap-pricing/&#34;&gt;previous post&lt;/a&gt;. I will do this in a “real world” environment hence using real market data as per the last 14th of April.&lt;/p&gt;
+&lt;!-- more --&gt;
+&lt;div id=&#34;import-the-discount-factors-from-bloomberg&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Import the discount factors from Bloomberg&lt;/h3&gt;
+&lt;p&gt;Let’s start the pricing of the swap portfolio with purrr by loading from an external source the EUR discount factor curve. My source is &lt;em&gt;Bloomberg&lt;/em&gt; and in particular the &lt;em&gt;SWPM&lt;/em&gt; page, which allows all the Bloomberg users to price interest rate sensitive instruments. It also contains a tab with the curve information, which is the source of my curve. It is partly represented in the screenshot below and also as per the following table.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2019-04-24-real-world-tidy-interest-rate-swap-pricing_files/SWPM%20screenshot.png&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;today &amp;lt;- lubridate::ymd(20190414)
+
+ir_curve &amp;lt;- readr::read_csv(here::here(&amp;quot;data/Basket of IRS/Curve at 140419.csv&amp;quot;))
+
+ir_curve %&amp;gt;% 
+  knitr::kable(caption = &amp;quot;Input from Bloomberg&amp;quot;, &amp;quot;html&amp;quot;) %&amp;gt;% 
+  kableExtra::kable_styling(bootstrap_options = c(&amp;quot;striped&amp;quot;, &amp;quot;hover&amp;quot;, &amp;quot;condensed&amp;quot;, &amp;quot;responsive&amp;quot;)) %&amp;gt;% 
+  kableExtra::scroll_box(width = &amp;quot;750px&amp;quot;, height = &amp;quot;200px&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;div style=&#34;border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:200px; overflow-x: scroll; width:750px; &#34;&gt;
+&lt;table class=&#34;table table-striped table-hover table-condensed table-responsive&#34; style=&#34;margin-left: auto; margin-right: auto;&#34;&gt;
+&lt;caption&gt;
+&lt;span id=&#34;tab:unnamed-chunk-2&#34;&gt;Table 1: &lt;/span&gt;Input from Bloomberg
+&lt;/caption&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style=&#34;text-align:left;position: sticky; top:0; background-color: #FFFFFF;&#34;&gt;
+Maturity Date
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;position: sticky; top:0; background-color: #FFFFFF;&#34;&gt;
+Market Rate
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;position: sticky; top:0; background-color: #FFFFFF;&#34;&gt;
+Shift (bp)
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;position: sticky; top:0; background-color: #FFFFFF;&#34;&gt;
+Shifted Rate
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;position: sticky; top:0; background-color: #FFFFFF;&#34;&gt;
+Zero Rate
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;position: sticky; top:0; background-color: #FFFFFF;&#34;&gt;
+Discount
+&lt;/th&gt;
+&lt;th style=&#34;text-align:left;position: sticky; top:0; background-color: #FFFFFF;&#34;&gt;
+Source
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+04/15/2019
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.364000
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.364000
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.3640000
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+NA
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+CASH
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+04/23/2019
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.378000
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.378000
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.3780000
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.0000735
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+CASH
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+05/16/2019
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.367000
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.367000
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.3670000
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.0003059
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+CASH
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+07/16/2019
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.310000
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.310000
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.3100000
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.0007842
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+CASH
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+10/16/2019
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.232000
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.232000
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.2320000
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.0011807
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+CASH
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+04/16/2020
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.227000
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.227000
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.2293661
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.0023373
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+FRA
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+10/16/2020
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.191000
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.191000
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.2164290
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.0033115
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+FRA
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+04/16/2021
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.199250
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.199250
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.1992838
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.0039976
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+SWAP
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+04/19/2022
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.130500
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.130500
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.1306045
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.0039393
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+SWAP
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+04/17/2023
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.039750
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.039750
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.0398284
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.0015958
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+SWAP
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+04/16/2024
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.055250
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.055250
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.0554430
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.9972325
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+SWAP
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+04/16/2025
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.154250
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.154250
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.1550852
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.9907452
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+SWAP
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+04/16/2026
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.256500
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.256500
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.2584914
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.9820912
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+SWAP
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+04/16/2027
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.357250
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.357250
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.3609696
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.9715859
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+SWAP
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+04/18/2028
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.458250
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.458250
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.4644039
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.9591332
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+SWAP
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+04/16/2029
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.552400
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.552400
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.5615329
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.9455427
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+SWAP
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+04/16/2030
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.638500
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.638500
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.6510037
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.9311096
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+SWAP
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+04/16/2031
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.716500
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.716500
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.7326481
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.9161298
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+SWAP
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+04/17/2034
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.901000
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.901000
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.9281277
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.8705738
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+SWAP
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+04/18/2039
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.071000
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.071000
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.1106319
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.8017461
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+SWAP
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+04/19/2044
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.134000
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.134000
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.1759181
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.7464983
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+SWAP
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+04/20/2049
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.152000
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.152000
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.1905737
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.7010373
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+SWAP
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+04/16/2054
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.150000
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.150000
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.1826028
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.6626670
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+SWAP
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+04/16/2059
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.140249
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.140249
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.1661657
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.6289098
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+SWAP
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+04/16/2064
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.131000
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.131000
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.1512813
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.5974307
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+SWAP
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+04/16/2069
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.120999
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.120999
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.1359681
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.5684840
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+SWAP
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;p&gt;We now wrangle this data in order to get a two columns tibble containing the time to maturity and the discount factors for each pillar points on the curve. We us a &lt;em&gt;30/360&lt;/em&gt; day count convention because it is the standard for the EUR swaps.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;df.table &amp;lt;- ir_curve %&amp;gt;% 
+  dplyr::mutate(`Maturity Date` = lubridate::mdy(`Maturity Date`)) %&amp;gt;% 
+  dplyr::rowwise(.) %&amp;gt;% 
+  dplyr::mutate(t2m = RQuantLib::yearFraction(today, `Maturity Date`, 6)) %&amp;gt;% 
+  na.omit %&amp;gt;% 
+  dplyr::select(t2m, Discount) %&amp;gt;%
+  dplyr::rename(df = Discount) %&amp;gt;% 
+  dplyr::ungroup(.) %&amp;gt;% 
+  dplyr::bind_rows(c(t2m = 0,df = 1)) %&amp;gt;% 
+  dplyr::arrange(t2m)
+
+ggplot2::ggplot(df.table, ggplot2::aes(x = t2m, y = df)) + 
+  ggplot2::geom_point() +
+  ggplot2::geom_line(colour = &amp;quot;blue&amp;quot;) +
+  ggplot2::ggtitle(&amp;quot;Discount Factor curve at 14th of April 2019&amp;quot;) +
+  ggplot2::xlab(&amp;quot;Time to maturity&amp;quot;) +
+  ggplot2::ylab(&amp;quot;Discount Factor&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2019-04-24-real-world-tidy-interest-rate-swap-pricing_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;interest-rate-swap-pricing-functions&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Interest Rate Swap pricing functions&lt;/h3&gt;
+&lt;p&gt;I am now going to re-use the pricing functions that have been already described in a &lt;a href=&#34;https://www.curiousfrm.com/2019/03/using-the-tidyverse-for-swap-pricing/&#34;&gt;previous post&lt;/a&gt;. I have tidied them up a bit and given proper names, but the description still fully holds.&lt;/p&gt;
+&lt;p&gt;Let’s start from the one that calculates the swap cashflows.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;SwapCashflowYFCalculation  &amp;lt;- function(today, start.date, maturity.date,
+                                       time.unit, dcc, calendar) {
+  0:((lubridate::year(maturity.date) - lubridate::year(start.date)) *
+       (4 - time.unit)) %&amp;gt;% 
+    purrr::map_dbl(~RQuantLib::advance(calendar = calendar,
+                                       dates = start.date,
+                                       n = .x,
+                                       timeUnit = time.unit,
+                                       bdc = 1,
+                                       emr = TRUE)) %&amp;gt;%
+    lubridate::as_date() %&amp;gt;%
+    {if (start.date &amp;lt; today) append(today, .) else .} %&amp;gt;%
+    purrr::map_dbl(~RQuantLib::yearFraction(today, .x, dcc)) %&amp;gt;% 
+    tibble::tibble(yf = .) 
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;You may have noticed that I added one row &lt;code&gt;{if (start.date &amp;lt; today) append(today, .) else .}&lt;/code&gt;. This allows to properly manage the pricing of swaps with a starting date before today.&lt;/p&gt;
+&lt;p&gt;I now proceed with calculating the actual par swap rate, which is a key input to the pricing formula. You can notice in the function below that I use a linear interpolation on the log of the discount factors. This is in line with one of the Bloomberg options. It is proven that it:&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;provides step constant forward rates&lt;/li&gt;
+&lt;li&gt;locally stabilises the bucketed sensitivities&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Also the (old) swap rate pricing function is the same, we only filter for future cashflows as we want to be able to price swaps with a starting date before today.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;OLDParSwapRate &amp;lt;- function(swap.cf){
+  swap.cf %&amp;lt;&amp;gt;% 
+    dplyr::filter(yf &amp;gt;= 0)
+    
+  num &amp;lt;- (swap.cf$df[1] - swap.cf$df[dim(swap.cf)[1]])
+  annuity &amp;lt;- (sum(diff(swap.cf$yf)*swap.cf$df[2:dim(swap.cf)[1]]))
+  return(list(swap.rate = num/annuity,
+              annuity = annuity))
+}
+
+ParSwapRateCalculation &amp;lt;- function(swap.cf.yf, df.table) {
+  swap.cf.yf  %&amp;gt;% 
+    dplyr::mutate(df = approx(df.table$t2m, log(df.table$df), .$yf) %&amp;gt;%
+                    purrr::pluck(&amp;quot;y&amp;quot;) %&amp;gt;% 
+                    exp) %&amp;gt;%
+    OLDParSwapRate
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;I now want to introduce two new functions which are needed for calculating the actual market values:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;the first one extracts the year fraction for the accrual calculation&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;the second one calculates the main characteristics of a swap:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;the par swap rate&lt;/li&gt;
+&lt;li&gt;the pv01 (or analytic delta)&lt;/li&gt;
+&lt;li&gt;the clean market value&lt;/li&gt;
+&lt;li&gt;the accrual for the fixed rate leg&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;I have defined a variable &lt;code&gt;direction&lt;/code&gt; which represents the type of swap:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;if it is equal to &lt;code&gt;1&lt;/code&gt; then it is a &lt;em&gt;receiver&lt;/em&gt; swap&lt;/li&gt;
+&lt;li&gt;if it is equal to &lt;code&gt;-1&lt;/code&gt; then it is a &lt;em&gt;payer&lt;/em&gt; swap&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;CalculateAccrual &amp;lt;- function(swap.cf){
+  swap.cf %&amp;gt;% 
+    dplyr::filter(yf &amp;lt; 0) %&amp;gt;% 
+    dplyr::select(yf) %&amp;gt;% 
+    dplyr::arrange(dplyr::desc(yf)) %&amp;gt;% 
+    dplyr::top_n(1) %&amp;gt;% 
+    as.double %&amp;gt;% 
+    {if (is.na(.)) 0 else .}
+}
+
+SwapCalculations &amp;lt;- function(swap.cf.yf, notional, strike, direction, df.table) {
+  swap.par.pricing &amp;lt;- ParSwapRateCalculation(swap.cf.yf, df.table)
+  
+  mv &amp;lt;- notional * swap.par.pricing$annuity * (strike - swap.par.pricing$swap.rate) *
+    direction
+    
+  accrual.fixed &amp;lt;- swap.cf.yf %&amp;gt;% 
+    CalculateAccrual %&amp;gt;% 
+    `*`(notional * strike * direction * -1)
+  
+  pv01 &amp;lt;- notional/10000 * swap.par.pricing$annuity * direction
+  
+  list(clean.mv = mv, accrual.fixed = accrual.fixed, par = swap.par.pricing$swap.rate, 
+       pv01 = pv01)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We then put everything together with the following pricing pipe:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;SwapPricing &amp;lt;- function(today, swap, df.table) {
+  SwapCashflowYFCalculation(today, swap$start.date, 
+                                       swap$maturity.date, swap$time.unit, 
+                                       swap$dcc, swap$calendar) %&amp;gt;% 
+    SwapCalculations(swap$notional, swap$strike, swap$direction, df.table)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;pricing-a-swap&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Pricing a swap&lt;/h3&gt;
+&lt;p&gt;It’s showtime! :-) Let’s test our pricing function on a swap that we define as a list. This is a EUR 10m notional receiver swap starting on the 19th of January 2007 with 25 years of maturity. The paying dates are calculated using the modified following rule and the day count convention is 30/360.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;swap.25y &amp;lt;- list(notional = 10000000,
+                 start.date = lubridate::ymd(20070119),
+                 maturity.date = lubridate::ymd(20320119),
+                 strike = 0.00059820,
+                 direction = 1,
+                 time.unit = 3,
+                 dcc = 6,
+                 calendar = &amp;quot;TARGET&amp;quot;)
+
+
+SwapPricing(today, swap.25y, df.table)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## $clean.mv
+## [1] -881814.6
+## 
+## $accrual.fixed
+## [1] 1379.183
+## 
+## $par
+## [1] 0.007713252
+## 
+## $pv01
+## [1] 12393.65&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We can compare the results with the actual Bloomberg output:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2019-04-24-real-world-tidy-interest-rate-swap-pricing_files/Pricing%2025%20years%20swap.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;You can notice that:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;the par rate is exact to less than 1bp&lt;/li&gt;
+&lt;li&gt;the clean market price difference is less than 0.2 dv01s&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;We can therefore say that the pricing functions have been validated.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;pricing-a-basket-of-swaps&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Pricing a basket of swaps&lt;/h3&gt;
+&lt;p&gt;With &lt;strong&gt;purrr&lt;/strong&gt; it is &lt;strong&gt;very&lt;/strong&gt; easy to vectorise the &lt;code&gt;SwapPricing&lt;/code&gt; hence the pricing of a portfolio of swaps is seemingless.&lt;/p&gt;
+&lt;p&gt;I firstly have to define a number of different contracts, including a forward starting one.
+I then combine all of them in a list and let the power of &lt;code&gt;map.df&lt;/code&gt; do the magic.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;swap.30y &amp;lt;- list(notional = 10000000,
+                 start.date = lubridate::ymd(20120424),
+                 maturity.date = lubridate::ymd(20420424),
+                 strike = 0.01,
+                 direction = -1,
+                 time.unit = 3,
+                 dcc = 6,
+                 calendar = &amp;quot;TARGET&amp;quot;)
+
+swap.10y &amp;lt;- list(notional = 20000000,
+                 start.date = lubridate::ymd(20120221),
+                 maturity.date = lubridate::ymd(20220221),
+                 strike = 0.0025,
+                 direction = 1,
+                 time.unit = 3,
+                 dcc = 6,
+                 calendar = &amp;quot;TARGET&amp;quot;)
+
+swap.2y.16y &amp;lt;- list(notional = 7500000,
+                 start.date = lubridate::ymd(20210414),
+                 maturity.date = lubridate::ymd(20370414),
+                 strike = 0.015,
+                 direction = 1,
+                 time.unit = 3,
+                 dcc = 6,
+                 calendar = &amp;quot;TARGET&amp;quot;)
+swaps &amp;lt;- list(swap.25y = swap.25y, swap.30y = swap.30y, swap.10y = swap.10y, 
+     swap.2y.16y = swap.2y.16y) 
+
+
+pricing.result &amp;lt;- swaps %&amp;gt;% 
+  purrr::map_df(~SwapPricing(today, .x, df.table)) %&amp;gt;% 
+  dplyr::mutate(swap.id = names(swaps)) %&amp;gt;% 
+  dplyr::select(swap.id, dplyr::everything())&lt;/code&gt;&lt;/pre&gt;
+&lt;table class=&#34;table table-striped table-hover table-condensed table-responsive&#34; style=&#34;margin-left: auto; margin-right: auto;&#34;&gt;
+&lt;caption&gt;
+&lt;span id=&#34;tab:unnamed-chunk-10&#34;&gt;Table 2: &lt;/span&gt;Pricing results
+&lt;/caption&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style=&#34;text-align:left;&#34;&gt;
+swap.id
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+clean.mv
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+accrual.fixed
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+par
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+pv01
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+swap.25y
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-881,814.61
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1,379.18
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.77%
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+12,393.65
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+swap.30y
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+233,691.75
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-97,222.22
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.11%
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-20,867.00
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+swap.10y
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+222,083.28
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+7,361.11
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.14%
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+5,724.42
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+swap.2y.16y
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+360,095.21
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.00
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.18%
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+11,163.37
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;This is it for today. In the next post I will finish the pricing of this book of swaps calculating the accrual of the floating leg - which requires a bit of web scraping. Stay tuned.&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
     
     <item>
       <title>Using the tidyverse for swap pricing</title>
