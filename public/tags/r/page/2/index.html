@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="generator" content="Hugo 0.54.0 with theme Tranquilpeak 0.4.3-SNAPSHOT">
+<meta name="generator" content="Hugo 0.55.4 with theme Tranquilpeak 0.4.3-SNAPSHOT">
 <meta name="author" content="Davide Magno">
 <meta name="keywords" content="">
 <meta name="description" content="Hugo tranquilpeak theme demo">
@@ -390,15 +390,17 @@ For example, let’s suppose that we receive the expected returns of the Google 
           <div class="media">
             
             <div class="media-body">
-              <a class="link-unstyled" href="/2019/04/pricing-a-basket-of-interest-rate-swaps-with-purrr/">
-                <h3 class="media-heading">Pricing a basket of interest rate swaps with purrr</h3>
+              <a class="link-unstyled" href="/2019/07/downloading-variable-rate/">
+                <h3 class="media-heading">Pricing floating legs of interest rate swaps</h3>
               </a>
               <span class="media-meta">
                 <span class="media-date text-small">
-                  Apr 4, 2019
+                  Jul 7, 2019
                 </span>
               </span>
-              <div class="media-content hide-xs font-merryweather"><p>In this post I will show how easy is to price a portfolio of swaps leveraging the <strong>purrr</strong> package and given the swap pricing functions that we introduced in a <a href="https://www.curiousfrm.com/2019/03/using-the-tidyverse-for-swap-pricing/">previous post</a></p></div>
+              <div class="media-content hide-xs font-merryweather">In this post we will close the trilogy on (old style) swap pricing. In particular, we will look at how downloading the data for the variable rate needed to calculate the variable leg accrual.
+ Part 1 gave the general idea behind tidy pricing interest rate swaps using a 7 lines pipe
+ Part 2 went much more into detail and priced some real world contract comparing the results obtained vs Bloomberg and showing significantly good results.</div>
             </div>
             <div style="clear:both;"></div>
             <hr>
@@ -407,15 +409,16 @@ For example, let’s suppose that we receive the expected returns of the Google 
           <div class="media">
             
             <div class="media-body">
-              <a class="link-unstyled" href="/2019/04/pricing-a-portfolio-of-interest-rate-swaps/">
-                <h3 class="media-heading">Pricing a portfolio of interest rate swaps</h3>
+              <a class="link-unstyled" href="/2019/04/real-world-tidy-interest-rate-swap-pricing/">
+                <h3 class="media-heading">Real world tidy interest rate swap pricing</h3>
               </a>
               <span class="media-meta">
                 <span class="media-date text-small">
                   Apr 4, 2019
                 </span>
               </span>
-              <div class="media-content hide-xs font-merryweather"></div>
+              <div class="media-content hide-xs font-merryweather">In this post I will show how easy is to price a portfolio of swaps leveraging the purrr package and given the swap pricing functions that we introduced in a previous post. I will do this in a “real world” environment hence using real market data as per the last 14th of April.
+Import the discount factors from Bloomberg Let’s start the pricing of the swap portfolio with purrr by loading from an external source the EUR discount factor curve.</div>
             </div>
             <div style="clear:both;"></div>
             <hr>

@@ -5,10 +5,2345 @@
     <description>Recent content in Finance on The CuRious Financial Risk ManageR</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 25 Apr 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 16 Jul 2019 00:00:00 +0000</lastBuildDate>
     
         <atom:link href="/categories/finance/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Pricing floating legs of interest rate swaps</title>
+      <link>/2019/07/downloading-variable-rate/</link>
+      <pubDate>Tue, 16 Jul 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/2019/07/downloading-variable-rate/</guid>
+      <description>
+&lt;script src=&#34;/rmarkdown-libs/kePrint/kePrint.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;p&gt;In this post we will close the trilogy on (old style) swap pricing. In particular, we will look at how downloading the data for the variable rate needed to calculate the variable leg accrual.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://www.curiousfrm.com/2019/03/using-the-tidyverse-for-swap-pricing/&#34;&gt;Part 1&lt;/a&gt;
+gave the general idea behind tidy pricing interest rate swaps using a 7 lines
+pipe&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://www.curiousfrm.com/2019/04/real-world-tidy-interest-rate-swap-pricing/&#34;&gt;Part 2&lt;/a&gt;
+went much more into detail and priced some real world contract comparing the results
+obtained vs Bloomberg and showing significantly good results.&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The only part missing was calculating the accrual for the floating leg. To do this
+we need the information about the historical level of the interest rate to which the leg
+is linked.&lt;/p&gt;
+&lt;p&gt;For standard EUR contracts, this rate is the 6 months’ EURIBOR. For those of you
+who are interested in understanding more what this rate is can go &lt;a href=&#34;https://www.euribor-rates.eu/what-is-euribor.asp&#34;&gt;this link&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Sourcing the data is not a problem, but doing it the &lt;code&gt;R&lt;/code&gt; way (ie. for free), can be.&lt;/p&gt;
+&lt;p&gt;Luckily the awesome &lt;a href=&#34;https://www.quandl.com/&#34;&gt;Quandl&lt;/a&gt; data provider actually
+provides the information we need. &lt;em&gt;Quandl&lt;/em&gt; is a premier source for financial, economic, and alternative datasets, serving investment professionals. Quandl’s platform is used by over 400,000 people, including analysts from the world’s top hedge funds, asset managers and investment banks.&lt;/p&gt;
+&lt;p&gt;Pulling data from Quandl is very easy using the &lt;code&gt;Quandl&lt;/code&gt; package available on &lt;em&gt;CRAN&lt;/em&gt;
+Its logic is quite simple:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;Quandl::Quandl(code, start_date, end_date)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;where &lt;em&gt;code&lt;/em&gt; is a unique identifier that can be sourced from the Quandl website.&lt;/p&gt;
+&lt;p&gt;In particular, we shoudl be grateful to the &lt;em&gt;Bank of France&lt;/em&gt; which provides all
+the interest rate information we need. Going on their
+&lt;a href=&#34;https://www.quandl.com/data/BOF-Bank-of-France&#34;&gt;page&lt;/a&gt; we can in fact find that
+the code for the 6 months EURIBOR rate is “BOF/QS_D_IEUTIO6M”.&lt;/p&gt;
+&lt;p&gt;Let’s then see what the output of this very simple function is with our code:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;rates &amp;lt;- Quandl::Quandl(&amp;quot;BOF/QS_D_IEUTIO6M&amp;quot;, 
+               start_date = lubridate::dmy(&amp;quot;01-01-2018&amp;quot;), 
+               end_date = lubridate::dmy(&amp;quot;31-12-2018&amp;quot;))
+
+rates %&amp;gt;% 
+  knitr::kable(caption = &amp;quot;Output from Quandl&amp;quot;, &amp;quot;html&amp;quot;) %&amp;gt;% 
+  kableExtra::kable_styling(bootstrap_options = c(&amp;quot;striped&amp;quot;, &amp;quot;hover&amp;quot;, &amp;quot;condensed&amp;quot;, &amp;quot;responsive&amp;quot;)) %&amp;gt;% 
+   kableExtra::scroll_box(height = &amp;quot;500px&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;div style=&#34;border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:500px; &#34;&gt;
+&lt;table class=&#34;table table-striped table-hover table-condensed table-responsive&#34; style=&#34;margin-left: auto; margin-right: auto;&#34;&gt;
+&lt;caption&gt;
+&lt;span id=&#34;tab:unnamed-chunk-2&#34;&gt;Table 1: &lt;/span&gt;Output from Quandl
+&lt;/caption&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style=&#34;text-align:left;position: sticky; top:0; background-color: #FFFFFF;&#34;&gt;
+Date
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;position: sticky; top:0; background-color: #FFFFFF;&#34;&gt;
+Value
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-12-31
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.237
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-12-27
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.237
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-12-24
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.237
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-12-21
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.238
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-12-20
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.238
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-12-19
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.238
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-12-18
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.238
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-12-17
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.237
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-12-14
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.238
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-12-13
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.239
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-12-12
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.241
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-12-11
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.244
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-12-10
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.245
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-12-07
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.246
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-12-06
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.246
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-12-05
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.246
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-12-04
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.247
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-12-03
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.248
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-11-30
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.251
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-11-29
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.253
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-11-28
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.256
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-11-27
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.256
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-11-26
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.256
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-11-23
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.257
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-11-22
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.257
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-11-21
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.257
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-11-20
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.257
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-11-19
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.257
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-11-16
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.257
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-11-15
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.257
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-11-14
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.257
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-11-13
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.257
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-11-12
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.257
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-11-09
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.257
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-11-08
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.257
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-11-07
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.258
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-11-06
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.258
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-11-05
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.257
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-11-02
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.258
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-11-01
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.258
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-10-31
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.259
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-10-30
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.259
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-10-29
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.259
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-10-26
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.259
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-10-25
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.259
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-10-24
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.259
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-10-23
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.259
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-10-22
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.261
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-10-19
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.262
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-10-18
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.265
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-10-17
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.266
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-10-16
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.265
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-10-15
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.266
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-10-12
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.267
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-10-11
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.267
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-10-10
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.268
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-10-09
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.268
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-10-08
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.267
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-10-05
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.267
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-10-04
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.268
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-10-03
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.267
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-10-02
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.268
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-10-01
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.268
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-09-28
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.268
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-09-27
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.268
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-09-26
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.267
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-09-25
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.267
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-09-24
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.267
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-09-21
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.268
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-09-20
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.268
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-09-19
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.267
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-09-18
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.268
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-09-17
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.268
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-09-14
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.269
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-09-13
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.269
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-09-12
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.269
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-09-11
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.269
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-09-10
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.269
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-09-07
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.269
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-09-06
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.269
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-09-05
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.269
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-09-04
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.269
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-09-03
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.268
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-08-31
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.268
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-08-30
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.268
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-08-29
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.266
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-08-28
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.266
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-08-27
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.265
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-08-24
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.266
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-08-23
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.266
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-08-22
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.266
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-08-21
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.266
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-08-20
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.266
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-08-17
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.266
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-08-16
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.266
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-08-15
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.266
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-08-14
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.266
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-08-13
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.266
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-08-10
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.267
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-08-09
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.266
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-08-08
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.268
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-08-07
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.268
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-08-06
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.268
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-08-03
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.268
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-08-02
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.269
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-08-01
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.269
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-07-31
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.268
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-07-30
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.268
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-07-27
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.269
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-07-26
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.269
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-07-25
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.269
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-07-24
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.269
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-07-23
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.269
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-07-20
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.269
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-07-19
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.269
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-07-18
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.269
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-07-17
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.269
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-07-16
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.269
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-07-13
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.268
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-07-12
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.271
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-07-11
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.271
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-07-10
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.269
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-07-09
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.270
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-07-06
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.270
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-07-05
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.269
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-07-04
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.269
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-07-03
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.270
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-07-02
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.269
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-06-29
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.270
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-06-28
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.270
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-06-27
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.270
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-06-26
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.270
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-06-25
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.269
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-06-22
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.268
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-06-21
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.268
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-06-20
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.268
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-06-19
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.268
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-06-18
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.268
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-06-15
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.268
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-06-14
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.268
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-06-13
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.268
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-06-12
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.267
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-06-11
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.267
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-06-08
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.267
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-06-07
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.269
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-06-06
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.269
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-06-05
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.269
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-06-04
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.269
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-06-01
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.269
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-05-31
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.269
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-05-30
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.269
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-05-29
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.269
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-05-28
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.269
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-05-25
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.271
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-05-24
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.271
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-05-23
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.270
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-05-22
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.271
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-05-18
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.271
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-05-17
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.270
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-05-16
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.272
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-05-15
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.271
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-05-14
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.271
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-05-11
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.271
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-05-10
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.271
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-05-09
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.269
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-05-08
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.269
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-05-07
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.269
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-05-04
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.269
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-05-03
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.269
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-05-02
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.269
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-04-30
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.269
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-04-27
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.269
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-04-26
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.269
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-04-25
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.270
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-04-24
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.270
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-04-23
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.270
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-04-20
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.271
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-04-19
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.270
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-04-18
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.271
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-04-17
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.270
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-04-16
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.270
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-04-13
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.271
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-04-12
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.271
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-04-11
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.270
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-04-10
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.271
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-04-09
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.270
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-04-06
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.270
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-04-05
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.271
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-04-04
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.271
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-04-03
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.270
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-03-29
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.271
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-03-28
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.271
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-03-27
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.271
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-03-26
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.271
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-03-23
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.270
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-03-22
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.271
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-03-21
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.272
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-03-20
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.273
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-03-19
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.272
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-03-16
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.272
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-03-15
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.271
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-03-14
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.271
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-03-13
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.271
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-03-12
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.271
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-03-09
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.271
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-03-08
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.272
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-03-07
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.272
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-03-06
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.271
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-03-05
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.272
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-03-02
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.271
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-03-01
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.271
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-02-28
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.270
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-02-27
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.271
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-02-26
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.271
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-02-23
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.271
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-02-22
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.270
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-02-21
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.271
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-02-20
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.273
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-02-19
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.274
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-02-16
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.274
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-02-15
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.276
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-02-14
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.276
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-02-13
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.276
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-02-12
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.278
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-02-09
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.278
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-02-08
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.278
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-02-07
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.278
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-02-06
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.279
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-02-05
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.278
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-02-02
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.278
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-02-01
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.278
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-01-31
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.279
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-01-30
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.278
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-01-29
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.278
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-01-26
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.278
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-01-25
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.278
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-01-24
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.278
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-01-23
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.276
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-01-22
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.277
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-01-19
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.276
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-01-18
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.275
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-01-17
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.274
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-01-16
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.272
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-01-15
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.274
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-01-12
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.271
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-01-11
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.271
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-01-10
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.271
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-01-09
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.271
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-01-08
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.271
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-01-05
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.271
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-01-04
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.271
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-01-03
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.271
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+2018-01-02
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.271
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;p&gt;We now have to incorporate this code into the overall coding strategy described
+in the &lt;a href=&#34;https://www.curiousfrm.com/2019/04/real-world-tidy-interest-rate-swap-pricing/&#34;&gt;previous post&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Before we dive in how I coded this, let’s see how I changed the data structure of
+how a swap is defined:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;swap.25y &amp;lt;- list(notional = 10000000,
+                  start.date = lubridate::ymd(20070119),
+                  maturity.date = lubridate::ymd(20320119), 
+                  strike = 0.00059820,
+                  type = &amp;quot;receiver&amp;quot;, 
+                  time.unit = list(pay = 6, receive = 12), 
+                  dcc = list(pay = 0, receive = 6), 
+                  calendar = &amp;quot;TARGET&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This new data structure now allows to define - as it should be - different
+characteristics (like coupon frequency or day count convention) for the different
+legs (&lt;code&gt;payer&lt;/code&gt; and &lt;code&gt;receiver&lt;/code&gt;) of the swap. In particular, we can specify in the
+&lt;code&gt;type&lt;/code&gt; variable whether the swap is a receiver or a payer one.&lt;/p&gt;
+&lt;p&gt;Let’s look atthe code now. The function that gets modified the most is the
+&lt;code&gt;SwapCashflowYFCalculation&lt;/code&gt; which I have re-named as &lt;code&gt;CashFlowPricing&lt;/code&gt; one
+which now looks as follows:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;CashFlowPricing  &amp;lt;- function(today, start.date, maturity.date, type,
+                                     time.unit, dcc, calendar) {
+  # Part 1: Calculate the whole cashflow dates
+  cashflows &amp;lt;- seq(from = 0,
+                   to = (lubridate::year(maturity.date) -
+                           lubridate::year(start.date)) * 12,
+                   by = time.unit) %&amp;gt;%
+    purrr::map_dbl(~RQuantLib::advance(calendar = calendar,
+                                       dates = start.date,
+                                       n = .x,
+                                       timeUnit = 2,
+                                       bdc = 1,
+                                       emr = TRUE)) %&amp;gt;%
+    lubridate::as_date() %&amp;gt;%
+    {if (start.date &amp;lt; today) append(today, .) else .}
+
+  # Part 2: calculate accrual and rate fixing days
+  accrual.date &amp;lt;- cashflows[today - cashflows &amp;gt; 0]
+
+  if (!identical(as.double(accrual.date), double(0))) {
+    accrual.date  %&amp;lt;&amp;gt;%  max()
+    if (stringr::str_detect(type, &amp;quot;floating&amp;quot;)) {
+      fixing.date &amp;lt;- accrual.date %&amp;gt;%
+        {RQuantLib::advance(calendar = calendar,
+                            dates = .,
+                            n = -2,
+                            timeUnit = 0,
+                            bdc = 1,
+                            emr = TRUE)}
+    } else {
+      fixing.date &amp;lt;- NULL
+    }
+    accrual.yf &amp;lt;- accrual.date %&amp;gt;%
+      {RQuantLib::yearFraction(today, ., dcc)} %&amp;gt;%
+      `*`(-1)
+  } else {
+    fixing.date &amp;lt;- NULL
+    accrual.yf &amp;lt;- 0
+  }
+
+  # Part 3: Tidy and return the list of relevant dates
+  cashflows %&amp;lt;&amp;gt;%
+    purrr::map_dbl(~RQuantLib::yearFraction(today, .x, dcc)) %&amp;gt;%
+    tibble::tibble(yf = .) %&amp;gt;%
+    dplyr::filter(yf &amp;gt;= 0)
+
+  return(list(cashflows = cashflows, accrual.yf = accrual.yf,
+              fixing.date = fixing.date))
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Let’s analyise the code:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;Part 1 is actually the core of the code previously described&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Part 2 is the new code. &lt;code&gt;accrual.date&lt;/code&gt; is the date from which the accrual starts
+to be calculated. This gets converted into a year fraction and saved into &lt;code&gt;accrual.yf&lt;/code&gt;.
+The if statement calculates the date at which the floating EURIBOR rate has to
+be snapped from Quandl only for the floating rate. This date is stored in the
+&lt;code&gt;fixing.date&lt;/code&gt; variable and it considers a 2 days lag which is standard for the
+European market.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Part 3 finally converts and returns all the future cashflows in terms of
+year fraction&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;You can note that we now calculate the cashflows for the floating leg even if
+it will note be used by the &lt;code&gt;OLDParSwapRate&lt;/code&gt; function. This will be needed for
+future developments when we will introduce the OIS discounting…(stay tuned!!)&lt;/p&gt;
+&lt;p&gt;I can now calculate the accrual and for this purpose I developed a brand new function
+called &lt;code&gt;CalculateAccrual&lt;/code&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;CalculateAccrual &amp;lt;- function(swap.dates, leg.type, swap, direction) {
+  # Part 1: calculate the accrual rate
+  if (!is.null(swap.dates$fixing.date)) {
+    rate &amp;lt;- Quandl::Quandl(&amp;quot;BOF/QS_D_IEUTIO6M&amp;quot;,
+                           start_date = swap.dates$fixing.date,
+                           end_date = swap.dates$fixing.date) %&amp;gt;%
+      tibble::as_tibble(.) %&amp;gt;%
+      dplyr::select(Value) %&amp;gt;%
+      as.double %&amp;gt;%
+      `/`(100)
+  } else {
+    rate &amp;lt;- swap$strike
+  }
+  # Part 2: Calculate the value of the accrual
+  swap.dates %&amp;gt;%
+    purrr::pluck(&amp;quot;accrual.yf&amp;quot;) %&amp;gt;%
+    `*`(swap$notional * rate * switch(leg.type, &amp;quot;pay&amp;quot; = -1, &amp;quot;receive&amp;quot; = 1))
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This is smaller and easier function:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;Part 1: for floating legs we use Quandl to download the needed data and extract
+the rate information. For the fixed one, we just use the strike of the swap.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Part 2: we calculate the actual accrual amount using the classical function&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Let’s see the final result on the 25 years’ swap we use as test:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 1 x 7
+##   swap.id  clean.mv dirty.mv accrual.pay accrual.receive     par    pv01
+##   &amp;lt;chr&amp;gt;       &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;       &amp;lt;dbl&amp;gt;           &amp;lt;dbl&amp;gt;   &amp;lt;dbl&amp;gt;   &amp;lt;dbl&amp;gt;
+## 1 Swap 25y -881815. -874994.       5441.           1379. 0.00771 -12394.&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Let’s compare the result with the Bloomberg screenshot&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2019-07-08-downloading-variable-rate_files/Pricing%2025yrs%20floating.png&#34; /&gt;
+You can see that we now perfectly price also the receiving accrual and, of course,
+also the total one.&lt;/p&gt;
+&lt;p&gt;We finish today’s post by looking at the pricing of the basket. You can see that
+now the algorithm correctly identifies what are the floating and the fixed legs
+depending on the type of the swap (ie receiver or payer).&lt;/p&gt;
+&lt;table class=&#34;table table-striped table-hover table-condensed table-responsive&#34; style=&#34;margin-left: auto; margin-right: auto;&#34;&gt;
+&lt;caption&gt;
+&lt;span id=&#34;tab:unnamed-chunk-7&#34;&gt;Table 2: &lt;/span&gt;Pricing results
+&lt;/caption&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style=&#34;text-align:left;&#34;&gt;
+swap.id
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+clean.mv
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+dirty.mv
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+accrual.pay
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+accrual.receive
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+par
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+pv01
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Swap 25y
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-881,814.61
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-874,994.32
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+5,441.11
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1,379.18
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.77%
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-12,393.65
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Swap 30y
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+233,691.75
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+123,999.52
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-97,222.22
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-12,470.00
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.11%
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+20,867.00
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Swap 10y
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+222,083.28
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+236,146.61
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+6,702.22
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+7,361.11
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.14%
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-5,724.42
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Swap 2y16y
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+360,095.21
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+360,095.21
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.00
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.00
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.18%
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-11,163.37
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+</description>
+    </item>
     
     <item>
       <title>Real world tidy interest rate swap pricing</title>

@@ -5,7 +5,7 @@
     <description>Recent content in Tags on The CuRious Financial Risk ManageR</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 25 Apr 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 16 Jul 2019 00:00:00 +0000</lastBuildDate>
     
         <atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
     
@@ -13,9 +13,27 @@
     <item>
       <title>Coding</title>
       <link>/tags/coding/</link>
-      <pubDate>Thu, 25 Apr 2019 00:00:00 +0000</pubDate>
+      <pubDate>Tue, 16 Jul 2019 00:00:00 +0000</pubDate>
       
       <guid>/tags/coding/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Interest Rates</title>
+      <link>/tags/interest-rates/</link>
+      <pubDate>Tue, 16 Jul 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/interest-rates/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>R</title>
+      <link>/tags/r/</link>
+      <pubDate>Tue, 16 Jul 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/r/</guid>
       <description></description>
     </item>
     
@@ -25,15 +43,6 @@
       <pubDate>Thu, 25 Apr 2019 00:00:00 +0000</pubDate>
       
       <guid>/tags/purrr/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>R</title>
-      <link>/tags/r/</link>
-      <pubDate>Thu, 25 Apr 2019 00:00:00 +0000</pubDate>
-      
-      <guid>/tags/r/</guid>
       <description></description>
     </item>
     
@@ -52,15 +61,6 @@
       <pubDate>Thu, 25 Apr 2019 00:00:00 +0000</pubDate>
       
       <guid>/tags/tidy/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Interest Rates</title>
-      <link>/tags/interest-rates/</link>
-      <pubDate>Sun, 31 Mar 2019 00:00:00 +0000</pubDate>
-      
-      <guid>/tags/interest-rates/</guid>
       <description></description>
     </item>
     
