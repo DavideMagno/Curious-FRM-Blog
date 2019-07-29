@@ -1,0 +1,117 @@
+---
+title: SwapPricer is on Github
+author: Davide Magno
+date: '`r Sys.time()`'
+slug: swappricer-is-on-github
+categories:
+  - Finance
+tags:
+  - Coding
+  - SwapPricer
+  - R
+  - Toolbox
+keywords:
+  - tech
+---
+In the previous posts we have seen how easy it is to price interest rate swaps
+using R. I am honoured to announce that I have decided to put all the functions
+I have described together into a package that is called...SwapPricer! 
+
+Ok, the name is not super original, but it should at least be easy to remember.
+
+You can install it as follows:
+
+```{r}
+# library(devtools)
+devtools::install_github("DavideMagno/SwapPricer")
+```
+
+The package is still unfortunately not on CRAN but it has an official hexagon. 
+Here it is:
+
+<img src="/post/2019-07-29-swappricer-is-on-github_files/SwapPricerHex.png" 
+style = "display: block; margin-left: auto; margin-right: auto" height="223.5" 
+width="192.75"/>
+
+Let me know if you like it in the Disqus form below in the post.
+
+In order to price a swap you just need to run the following code.
+
+```{r example, warning=FALSE, message=FALSE}
+library(SwapPricer)
+SwapPortfolioPricing(SwapPricer::swap.basket, lubridate::ymd(20190414), SwapPricer::df.table)
+```
+
+You can see that I have used two objects that are delivered with the package:
+
+* *swap.basket* which consists in a 5 swaps portfolio that can be referenced as
+blueprint for your swap portfolio
+
+* *df.table* this is the discount curve downloaded from Bloomberg as at the 14th
+of April 2019
+
+We have tested the package using a 500 swaps portfolio and the results, in terms
+of performance are very encouraging. We analyse them using the amazing *profvis*
+tool.
+
+```{r, echo = FALSE}
+profvis::profvis({SwapPortfolioPricing(SwapPricer:::realworld.portfolio, lubridate::ymd(20190414), df.table)})
+```
+
+The results are quite interesting as they show we can split the code in three parts:
+
+  1) The first one converts the inputs in tabular form into list of lists of the 
+same format as we described in this post.
+
+  2) The second one is the one that takes the biggest amount of time and it 
+corresponds to the `CashFlowPricing` function. We have described this function 
+in detail in this post. If we dig into the profvis output, we can notice that
+the function that takes the most time is the `RQuantlib::advance` one. Unfortunately,
+this great function doesn't have a vectorised version hence we need to use functional
+programming like `map` to calculate multiple future cashflows. Also the `RQuantlib::yearFraction`
+function doesn't have a vectorised version hence I have preferred using another
+function that does the same but in a vectorised way. This function is `fmdates::year_frac`.
+The difference in performance is sizeable, as you can see from the *microbenchmark*
+test below:
+
+```{r}
+today <- Sys.Date()
+test <- seq(from = 3, to = 50*12, by = 3)
+cashflows <- today + months(test)
+
+microbenchmark::microbenchmark(
+  "Rquantlib" = mapply(function(x) RQuantLib::yearFraction(today, x, 2), cashflows),
+  "fmdates" = fmdates::year_frac(today, cashflows, "act/365")
+)
+```
+  
+  The difference in pricing is quite striking. I have submitted an [issue](https://github.com/eddelbuettel/rquantlib/issues/135) request on the Github
+page of RQuantLib, let's hope they'll want to implement a vectorised version of their
+cashflow functions.
+
+
+  3) The actual pricing of the 500 swaps takes less than 1 second. This is very 
+encouraging because when it will come to curve optimisation (formerly known as
+**bootstrapping**) or risk sensitivities and scenarios, parts 1 and 2 will be run
+once at the beginning of the process while part 3 will be run multiple times.
+
+Finally, I want to warn you: the package is still in a very early version, 
+this is just v0.1.0, hence it is able to price just:
+
+1) EUR swaps that pay semi-annually on the floating leg
+
+2) Using a one-curve framework
+
+**We are working to improve the toolbox in the next releases**
+
+This is the plan of improvements (after I'll submit the current version on CRAN
+for everybody to more easily access it - I am thinking, for example, 
+to corporate networks that have the ports to Github blocked):
+
+1) Extend to all the other currencies, custom frequencies and conventions
+
+2) Introduce OIS discounting
+
+3) Calculate additional risk measures like DV01, bucketed DV01 and Convexity
+
+It's going to be an interesting and long ride, you are welcome on-board! 
