@@ -21,7 +21,7 @@ Ok, the name is not super original, but it should at least be easy to remember.
 
 You can install it as follows:
 
-```{r, message=FALSE, echo=FALSE}
+```{r, message=FALSE, eval = FALSE}
 # library(devtools)
 devtools::install_github("DavideMagno/SwapPricer")
 ```
