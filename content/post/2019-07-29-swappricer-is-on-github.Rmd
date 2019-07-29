@@ -1,7 +1,7 @@
 ---
 title: SwapPricer is on Github
 author: Davide Magno
-date: '`r Sys.time()`'
+date: '`r Sys.Date()`'
 slug: swappricer-is-on-github
 categories:
   - Finance
@@ -21,7 +21,7 @@ Ok, the name is not super original, but it should at least be easy to remember.
 
 You can install it as follows:
 
-```{r}
+```{r, message=FALSE, echo=FALSE}
 # library(devtools)
 devtools::install_github("DavideMagno/SwapPricer")
 ```
