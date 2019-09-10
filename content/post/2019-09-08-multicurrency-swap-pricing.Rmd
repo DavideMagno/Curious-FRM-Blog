@@ -1,0 +1,145 @@
+---
+title: Multi Currency Swap Pricing with SwapPricer
+author: Davide Magno
+date: '`r Sys.Date()`'
+slug: multicurrency-swap-pricing
+categories:
+  - Finance
+tags:
+  - Coding
+  - SwapPricer
+  - R
+  - Toolbox
+keywords:
+  - tech
+---
+
+```{r, message = FALSE, echo = FALSE}
+# library(devtools)
+devtools::install_github("DavideMagno/SwapPricer")
+`%>%` <- magrittr::`%>%`
+`%<>%` <- magrittr::`%<>%`
+```
+
+I have released a new version of the package **SwapPricer** on GitHub 
+[here](https://github.com/DavideMagno/SwapPricer). 
+
+As we are now at version 1.0.1 the toolbox is able to price using just a 
+one-curve framework but is able to price multiple currencies (ie. CHF, EUR, GBP,
+JPY and USD) and any convention in terms of coupon frequency, day count convention.
+
+**We are working to introduce OIS Discounting in the next releases**
+
+## SwapPricer: instructions for use
+
+To run a multi-currency swap portfolio valuation you need the following three 
+"ingredients":
+
+1) A table with the characteristics of the swap, like the following one
+
+    ```{r, echo = FALSE, message = FALSE, warning = FALSE}
+    SwapPricer::swap.basket %>% 
+      dplyr::mutate_at(dplyr::vars("notional"), ~formattable::comma(., digits = 0)) %>%
+      dplyr::mutate_at(dplyr::vars("strike"), formattable::percent) %>% 
+      knitr::kable(caption = "Swap portfolio", "html", align = "c") %>% 
+      kableExtra::scroll_box(width = "690px")
+    ```
+    These are the columns that have to be in the 
+
+    * **ID** (character) is a custom ID for the swap
+    * **currency** (character) as per the ISO 4217 standard 
+    * **notional** (numeric)
+    * **start.date** (Date)
+    * **maturity.date** (Date)
+    * **strike** (numeric)
+    * **type** (string) either *payer* or *receiver*. It is not case-sensitive.
+    * **standard** (logical) 
+
+    Only if the field *standard* is set to FALSE then we need four additional fields.
+
+    An example of portfolio is provided with the package and is called *swap.basket*.
+
+    * **time.unit.pay** and **time.unit.receive** (integer) are the number of months for the frequency of the leg (ie. monthly would have a time.unit of 1, quarterly of 3, semiannual of 6 and annual of 12)
+    * **dcc.pay** and *dc..receive* (character) as per the *fmdates* helper
+
+2) The date at which the swaps are being priced
+
+3) As many interest rate lists as per the currencies in the swap portfolio.
+The list is made of a string with the code of the currency and a with a tibble
+with the discounting factor curve with two columns: Dates and Discount Factors (df). 
+Here is the structure of interest rate object:
+
+    ```{r, message = FALSE}
+    str(SwapPricer::EUR.curves)
+    ```
+    Where the *discount* tibble of the list has the same characteristics of the `df.table` object described in [this post](https://www.curiousfrm.com/2019/04/real-world-tidy-interest-rate-swap-pricing/) 
+    For your reference, I provided three curve objects with the package: *EUR.curves*, *GBP.curves* and
+*USD.curves*
+
+Now we can price our test multi-currency and non-standard swap portfolio by simply running `SwapPortfolioPricing` function with the three items in the order of description and appending as many curves as the number of currencies in the book.
+
+A sample code is shown here:
+
+```{r}
+today <- lubridate::ymd(20190414)
+
+results <- SwapPricer::SwapPortfolioPricing(SwapPricer::swap.basket, 
+                                            today, 
+                                            SwapPricer::EUR.curves, 
+                                            SwapPricer::GBP.curves, 
+                                            SwapPricer::USD.curves)
+```
+
+and these are the results in table format:
+
+```{r, echo = FALSE}
+results %>% 
+  dplyr::mutate_at(dplyr::vars("clean.mv","dirty.mv","accrual.pay","accrual.receive","pv01"),
+                   formattable::comma) %>%
+  dplyr::mutate_at(dplyr::vars("par"), formattable::percent) %>%
+  knitr::kable(caption = "Pricing results", "html") %>%
+  kableExtra::scroll_box(width = "730px")
+```
+
+## So long RQuantLib
+
+Apart from the new definition of the curve object, most of the changes have happened "behind the scenes". One thing that I had to do to make the deployment easier on all the OSs was to remove any reference to Quantlib. I am a huge fan of the RQuantLib package, but I realised I was using it just for adjusting dates for holidays. So I decided to take a different approach:
+
+1. I downloaded all the holidays and saved it as internal objects in my package
+2. I created a very simple routine to adjust for holidays, as in the following piece of code:
+
+```{r}
+AdvanceDate <- function(dates, currency, eom.check) {
+  holiday <- holidays[[currency]]
+  check <- TRUE %in% ((dates %in% holiday) |
+                        (weekdays(dates) %in% "Saturday") |
+                        (weekdays(dates) %in% "Sunday"))
+  if (check) {
+    repeat {
+      if (eom.check) {
+        dates <- dplyr::case_when((dates %in% holiday) ~ dates - 1,
+                                      (weekdays(dates) %in% "Saturday") ~ dates - 1,
+                                      (weekdays(dates) %in% "Sunday") ~ dates - 2,
+                                      TRUE ~ dates)
+      } else {
+        dates <- dplyr::case_when((dates %in% holiday) ~ dates + 1,
+                                      (weekdays(dates) %in% "Saturday") ~ dates + 2,
+                                      (weekdays(dates) %in% "Sunday") ~ dates + 1,
+                                      TRUE ~ dates)
+      }
+      check <- TRUE %in% ((dates %in% holiday) |
+                            (weekdays(dates) %in% "Saturday") |
+                            (weekdays(dates) %in% "Sunday"))
+      if (!check) {
+        return(dates)
+      }
+    }
+  } else {
+    return(dates)
+  }
+}
+```
+
+You can see that adjusting for holidays is a recursive exercise: let's assume we have Easter Sunday in the cashflow schedule. It automatically gets adjusted to Monday, but isince Easter Monday is also an holiday, the function will run a second time to further advance to Tuesday. 
+
+The performance of the function is guaranteed by the fact that the **dplyr::case_when** function is vectorised. In fact, the overall procedure takes almost the same time to run as with the RQuantLib function.

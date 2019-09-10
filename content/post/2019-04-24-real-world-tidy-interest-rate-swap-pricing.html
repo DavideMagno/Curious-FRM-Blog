@@ -26,7 +26,7 @@ keywords:
 <p><img src="/post/2019-04-24-real-world-tidy-interest-rate-swap-pricing_files/SWPM%20screenshot.png" /></p>
 <pre class="r"><code>today &lt;- lubridate::ymd(20190414)
 
-ir_curve &lt;- readr::read_csv(here::here(&quot;data/Basket of IRS/Curve at 140419.csv&quot;))
+ir_curve &lt;- readr::read_csv(here::here(&quot;csv/Basket of IRS/Curve at 140419.csv&quot;))
 
 ir_curve %&gt;% 
   knitr::kable(caption = &quot;Input from Bloomberg&quot;, &quot;html&quot;) %&gt;% 
@@ -80,7 +80,7 @@ Source
 -0.3640000
 </td>
 <td style="text-align:right;">
-NA
+1.0000000
 </td>
 <td style="text-align:left;">
 CASH

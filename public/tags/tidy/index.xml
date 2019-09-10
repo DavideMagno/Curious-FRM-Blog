@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tidy on The CuRious Financial Risk ManageR</title>
@@ -28,7 +29,7 @@
 &lt;p&gt;&lt;img src=&#34;/post/2019-04-24-real-world-tidy-interest-rate-swap-pricing_files/SWPM%20screenshot.png&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;today &amp;lt;- lubridate::ymd(20190414)
 
-ir_curve &amp;lt;- readr::read_csv(here::here(&amp;quot;data/Basket of IRS/Curve at 140419.csv&amp;quot;))
+ir_curve &amp;lt;- readr::read_csv(here::here(&amp;quot;csv/Basket of IRS/Curve at 140419.csv&amp;quot;))
 
 ir_curve %&amp;gt;% 
   knitr::kable(caption = &amp;quot;Input from Bloomberg&amp;quot;, &amp;quot;html&amp;quot;) %&amp;gt;% 
@@ -82,7 +83,7 @@ Source
 -0.3640000
 &lt;/td&gt;
 &lt;td style=&#34;text-align:right;&#34;&gt;
-NA
+1.0000000
 &lt;/td&gt;
 &lt;td style=&#34;text-align:left;&#34;&gt;
 CASH

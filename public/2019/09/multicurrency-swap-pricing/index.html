@@ -7,34 +7,26 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="generator" content="Hugo 0.54.0 with theme Tranquilpeak 0.4.3-SNAPSHOT">
 <meta name="author" content="Davide Magno">
-<meta name="keywords" content="">
-<meta name="description" content="One of the most common problems when dealign with financial data is to have assets (or liabilities) denominated in a currency that is different from the domestic one.
-I propose a tidy solution to this problem that involves no use of for cycles.
-The principle of the solution is that converting each currency can be done in parallel using the map function while the consolidation of the results will be done using the reduce logic.">
+<meta name="keywords" content="tech">
+<meta name="description" content="## ## checking for file ‘/private/var/folders/hf/3zd2l68s4xv13k7rbf1k51xw0000gn/T/RtmpZJz55Z/remotesa7a54189936/DavideMagno-SwapPricer-6cadd22/DESCRIPTION’ ... ✔ checking for file ‘/private/var/folders/hf/3zd2l68s4xv13k7rbf1k51xw0000gn/T/RtmpZJz55Z/remotesa7a54189936/DavideMagno-SwapPricer-6cadd22/DESCRIPTION’ ## ─ preparing ‘SwapPricer’: ## checking DESCRIPTION meta-information ... ✔ checking DESCRIPTION meta-information ## ─ checking for LF line-endings in source and make files and shell scripts ## ─ checking for empty or unneeded directories ## ─ looking to see if a ‘data/datalist’ file should be added ## ─ building ‘SwapPricer_1.0.2.tar.gz’ ## ##  I have released a new version of the package SwapPricer on GitHub here.">
 
 
-<meta property="og:description" content="One of the most common problems when dealign with financial data is to have assets (or liabilities) denominated in a currency that is different from the domestic one.
-I propose a tidy solution to this problem that involves no use of for cycles.
-The principle of the solution is that converting each currency can be done in parallel using the map function while the consolidation of the results will be done using the reduce logic.">
+<meta property="og:description" content="## ## checking for file ‘/private/var/folders/hf/3zd2l68s4xv13k7rbf1k51xw0000gn/T/RtmpZJz55Z/remotesa7a54189936/DavideMagno-SwapPricer-6cadd22/DESCRIPTION’ ... ✔ checking for file ‘/private/var/folders/hf/3zd2l68s4xv13k7rbf1k51xw0000gn/T/RtmpZJz55Z/remotesa7a54189936/DavideMagno-SwapPricer-6cadd22/DESCRIPTION’ ## ─ preparing ‘SwapPricer’: ## checking DESCRIPTION meta-information ... ✔ checking DESCRIPTION meta-information ## ─ checking for LF line-endings in source and make files and shell scripts ## ─ checking for empty or unneeded directories ## ─ looking to see if a ‘data/datalist’ file should be added ## ─ building ‘SwapPricer_1.0.2.tar.gz’ ## ##  I have released a new version of the package SwapPricer on GitHub here.">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Convert foreign currency valuations">
-<meta name="twitter:title" content="Convert foreign currency valuations">
-<meta property="og:url" content="/2018/02/convert-foreign-currency-valuations/">
-<meta property="twitter:url" content="/2018/02/convert-foreign-currency-valuations/">
+<meta property="og:title" content="Multi Currency Swap Pricing with SwapPricer">
+<meta name="twitter:title" content="Multi Currency Swap Pricing with SwapPricer">
+<meta property="og:url" content="/2019/09/multicurrency-swap-pricing/">
+<meta property="twitter:url" content="/2019/09/multicurrency-swap-pricing/">
 <meta property="og:site_name" content="The CuRious Financial Risk ManageR">
-<meta property="og:description" content="One of the most common problems when dealign with financial data is to have assets (or liabilities) denominated in a currency that is different from the domestic one.
-I propose a tidy solution to this problem that involves no use of for cycles.
-The principle of the solution is that converting each currency can be done in parallel using the map function while the consolidation of the results will be done using the reduce logic.">
-<meta name="twitter:description" content="One of the most common problems when dealign with financial data is to have assets (or liabilities) denominated in a currency that is different from the domestic one.
-I propose a tidy solution to this problem that involves no use of for cycles.
-The principle of the solution is that converting each currency can be done in parallel using the map function while the consolidation of the results will be done using the reduce logic.">
+<meta property="og:description" content="## ## checking for file ‘/private/var/folders/hf/3zd2l68s4xv13k7rbf1k51xw0000gn/T/RtmpZJz55Z/remotesa7a54189936/DavideMagno-SwapPricer-6cadd22/DESCRIPTION’ ... ✔ checking for file ‘/private/var/folders/hf/3zd2l68s4xv13k7rbf1k51xw0000gn/T/RtmpZJz55Z/remotesa7a54189936/DavideMagno-SwapPricer-6cadd22/DESCRIPTION’ ## ─ preparing ‘SwapPricer’: ## checking DESCRIPTION meta-information ... ✔ checking DESCRIPTION meta-information ## ─ checking for LF line-endings in source and make files and shell scripts ## ─ checking for empty or unneeded directories ## ─ looking to see if a ‘data/datalist’ file should be added ## ─ building ‘SwapPricer_1.0.2.tar.gz’ ## ##  I have released a new version of the package SwapPricer on GitHub here.">
+<meta name="twitter:description" content="## ## checking for file ‘/private/var/folders/hf/3zd2l68s4xv13k7rbf1k51xw0000gn/T/RtmpZJz55Z/remotesa7a54189936/DavideMagno-SwapPricer-6cadd22/DESCRIPTION’ ... ✔ checking for file ‘/private/var/folders/hf/3zd2l68s4xv13k7rbf1k51xw0000gn/T/RtmpZJz55Z/remotesa7a54189936/DavideMagno-SwapPricer-6cadd22/DESCRIPTION’ ## ─ preparing ‘SwapPricer’: ## checking DESCRIPTION meta-information ... ✔ checking DESCRIPTION meta-information ## ─ checking for LF line-endings in source and make files and shell scripts ## ─ checking for empty or unneeded directories ## ─ looking to see if a ‘data/datalist’ file should be added ## ─ building ‘SwapPricer_1.0.2.tar.gz’ ## ##  I have released a new version of the package SwapPricer on GitHub here.">
 <meta property="og:locale" content="en-us">
 
   
-    <meta property="article:published_time" content="2018-02-14T00:00:00">
+    <meta property="article:published_time" content="2019-09-10T00:00:00">
   
   
-    <meta property="article:modified_time" content="2018-02-14T00:00:00">
+    <meta property="article:modified_time" content="2019-09-10T00:00:00">
   
   
   
@@ -44,9 +36,13 @@ The principle of the solution is that converting each currency can be done in pa
   
   
     
+      <meta property="article:tag" content="Coding">
+    
+      <meta property="article:tag" content="SwapPricer">
+    
       <meta property="article:tag" content="R">
     
-      <meta property="article:tag" content="FX">
+      <meta property="article:tag" content="Toolbox">
     
   
 
@@ -71,14 +67,14 @@ The principle of the solution is that converting each currency can be done in pa
   <meta property="twitter:image" content="https://www.gravatar.com/avatar/c1105417b6cb80bccd4bb80937e0ec69?s=640">
 
 
-    <title>Convert foreign currency valuations</title>
+    <title>Multi Currency Swap Pricing with SwapPricer</title>
 
     <link rel="icon" href="/favicon.png">
     
 
     
 
-    <link rel="canonical" href="/2018/02/convert-foreign-currency-valuations/">
+    <link rel="canonical" href="/2019/09/multicurrency-swap-pricing/">
 
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
@@ -271,19 +267,19 @@ if (!doNotTrack) {
             <div class="post-header main-content-wrap text-left">
   
     <h1 class="post-title" itemprop="headline">
-      Convert foreign currency valuations
+      Multi Currency Swap Pricing with SwapPricer
     </h1>
   
   
   <div class="postShorten-meta post-meta">
     
-      <time itemprop="datePublished" datetime="2018-02-14T00:00:00Z">
+      <time itemprop="datePublished" datetime="2019-09-10T00:00:00Z">
         
   
   
   
   
-    14 February 2018
+    10 September 2019
   
 
       </time>
@@ -304,81 +300,792 @@ if (!doNotTrack) {
           <div class="post-content markdown" itemprop="articleBody">
             <div class="main-content-wrap">
               
+<script src="/rmarkdown-libs/kePrint/kePrint.js"></script>
 
 
-<p>One of the most common problems when dealign with financial data is to have assets (or liabilities) denominated in a currency that is different from the domestic one.</p>
-<p>I propose a tidy solution to this problem that involves no use of for cycles.</p>
-<p>The principle of the solution is that converting each currency can be done in parallel using the <strong>map</strong> function while the consolidation of the results will be done using the <strong>reduce</strong> logic.</p>
-<p>I am a big fan of the tidyverse and therefore I will start loading the required packages</p>
-<pre class="r"><code>library(purrr)
-library(stringr)
-library(tibble)
-library(magrittr)
-library(dplyr)</code></pre>
-<p>I suppose to have a very simple investment dataset made of two fields:</p>
+<pre><code>## 
+##   
+   checking for file ‘/private/var/folders/hf/3zd2l68s4xv13k7rbf1k51xw0000gn/T/RtmpZJz55Z/remotesa7a54189936/DavideMagno-SwapPricer-6cadd22/DESCRIPTION’ ...
+  
+✔  checking for file ‘/private/var/folders/hf/3zd2l68s4xv13k7rbf1k51xw0000gn/T/RtmpZJz55Z/remotesa7a54189936/DavideMagno-SwapPricer-6cadd22/DESCRIPTION’
+## 
+  
+─  preparing ‘SwapPricer’:
+## 
+  
+   checking DESCRIPTION meta-information ...
+  
+✔  checking DESCRIPTION meta-information
+## 
+  
+─  checking for LF line-endings in source and make files and shell scripts
+## 
+  
+─  checking for empty or unneeded directories
+## ─  looking to see if a ‘data/datalist’ file should be added
+## 
+  
+─  building ‘SwapPricer_1.0.2.tar.gz’
+## 
+  
+   
+## </code></pre>
+<p>I have released a new version of the package <strong>SwapPricer</strong> on GitHub
+<a href="https://github.com/DavideMagno/SwapPricer">here</a>.</p>
+<p>As we are now at version 1.0.1 the toolbox is able to price using just a
+one-curve framework but is able to price multiple currencies (ie. CHF, EUR, GBP,
+JPY and USD) and any convention in terms of coupon frequency, day count convention.</p>
+<p><strong>We are working to introduce OIS Discounting in the next releases</strong></p>
+<div id="swappricer-instructions-for-use" class="section level2">
+<h2>SwapPricer: instructions for use</h2>
+<p>To run a multi-currency swap portfolio valuation you need the following three
+“ingredients”:</p>
 <ol style="list-style-type: decimal">
-<li>a column with the currency of the investment (local currency being <em>EUR</em>)</li>
-<li>a column with the market value of the investment in local currency</li>
+<li><p>A table with the characteristics of the swap, like the following one</p>
+<div style="border: 1px solid #ddd; padding: 5px; overflow-x: scroll; width:690px; ">
+<table>
+<caption>
+<span id="tab:unnamed-chunk-2">Table 1: </span>Swap portfolio
+</caption>
+<thead>
+<tr>
+<th style="text-align:center;">
+ID
+</th>
+<th style="text-align:center;">
+currency
+</th>
+<th style="text-align:center;">
+notional
+</th>
+<th style="text-align:center;">
+start.date
+</th>
+<th style="text-align:center;">
+maturity.date
+</th>
+<th style="text-align:center;">
+strike
+</th>
+<th style="text-align:center;">
+type
+</th>
+<th style="text-align:center;">
+standard
+</th>
+<th style="text-align:center;">
+time.unit.pay
+</th>
+<th style="text-align:center;">
+time.unit.receive
+</th>
+<th style="text-align:center;">
+dcc.pay
+</th>
+<th style="text-align:center;">
+dcc.receive
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">
+Swap 25y
+</td>
+<td style="text-align:center;">
+EUR
+</td>
+<td style="text-align:center;">
+10,000,000
+</td>
+<td style="text-align:center;">
+19/01/2007
+</td>
+<td style="text-align:center;">
+19/01/2032
+</td>
+<td style="text-align:center;">
+0.06%
+</td>
+<td style="text-align:center;">
+receiver
+</td>
+<td style="text-align:center;">
+TRUE
+</td>
+<td style="text-align:center;">
+NA
+</td>
+<td style="text-align:center;">
+NA
+</td>
+<td style="text-align:center;">
+NA
+</td>
+<td style="text-align:center;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Swap 30y
+</td>
+<td style="text-align:center;">
+GBP
+</td>
+<td style="text-align:center;">
+1,000,000
+</td>
+<td style="text-align:center;">
+24/04/2012
+</td>
+<td style="text-align:center;">
+24/04/2042
+</td>
+<td style="text-align:center;">
+1.00%
+</td>
+<td style="text-align:center;">
+payer
+</td>
+<td style="text-align:center;">
+TRUE
+</td>
+<td style="text-align:center;">
+NA
+</td>
+<td style="text-align:center;">
+NA
+</td>
+<td style="text-align:center;">
+NA
+</td>
+<td style="text-align:center;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Swap 10y
+</td>
+<td style="text-align:center;">
+USD
+</td>
+<td style="text-align:center;">
+2,000,000
+</td>
+<td style="text-align:center;">
+21/02/2012
+</td>
+<td style="text-align:center;">
+21/02/2022
+</td>
+<td style="text-align:center;">
+0.25%
+</td>
+<td style="text-align:center;">
+receiver
+</td>
+<td style="text-align:center;">
+TRUE
+</td>
+<td style="text-align:center;">
+NA
+</td>
+<td style="text-align:center;">
+NA
+</td>
+<td style="text-align:center;">
+NA
+</td>
+<td style="text-align:center;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Swap 2y16y
+</td>
+<td style="text-align:center;">
+GBP
+</td>
+<td style="text-align:center;">
+7,500,000
+</td>
+<td style="text-align:center;">
+14/04/2021
+</td>
+<td style="text-align:center;">
+14/04/2037
+</td>
+<td style="text-align:center;">
+1.50%
+</td>
+<td style="text-align:center;">
+receiver
+</td>
+<td style="text-align:center;">
+TRUE
+</td>
+<td style="text-align:center;">
+NA
+</td>
+<td style="text-align:center;">
+NA
+</td>
+<td style="text-align:center;">
+NA
+</td>
+<td style="text-align:center;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Swap non standard
+</td>
+<td style="text-align:center;">
+EUR
+</td>
+<td style="text-align:center;">
+15,000,000
+</td>
+<td style="text-align:center;">
+26/05/2014
+</td>
+<td style="text-align:center;">
+26/05/2039
+</td>
+<td style="text-align:center;">
+2.00%
+</td>
+<td style="text-align:center;">
+payer
+</td>
+<td style="text-align:center;">
+FALSE
+</td>
+<td style="text-align:center;">
+12
+</td>
+<td style="text-align:center;">
+3
+</td>
+<td style="text-align:center;">
+act/365
+</td>
+<td style="text-align:center;">
+act/365
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Swap 10y semi fixed
+</td>
+<td style="text-align:center;">
+EUR
+</td>
+<td style="text-align:center;">
+10,000,000
+</td>
+<td style="text-align:center;">
+26/05/2014
+</td>
+<td style="text-align:center;">
+26/05/2024
+</td>
+<td style="text-align:center;">
+0.10%
+</td>
+<td style="text-align:center;">
+payer
+</td>
+<td style="text-align:center;">
+FALSE
+</td>
+<td style="text-align:center;">
+6
+</td>
+<td style="text-align:center;">
+6
+</td>
+<td style="text-align:center;">
+act/365
+</td>
+<td style="text-align:center;">
+act/365
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Swap 30y quarter floating
+</td>
+<td style="text-align:center;">
+GBP
+</td>
+<td style="text-align:center;">
+1,000,000
+</td>
+<td style="text-align:center;">
+24/04/2012
+</td>
+<td style="text-align:center;">
+24/04/2042
+</td>
+<td style="text-align:center;">
+2.00%
+</td>
+<td style="text-align:center;">
+receiver
+</td>
+<td style="text-align:center;">
+FALSE
+</td>
+<td style="text-align:center;">
+3
+</td>
+<td style="text-align:center;">
+12
+</td>
+<td style="text-align:center;">
+act/360
+</td>
+<td style="text-align:center;">
+act/365
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Swap 10y irregular
+</td>
+<td style="text-align:center;">
+USD
+</td>
+<td style="text-align:center;">
+2,000,000
+</td>
+<td style="text-align:center;">
+21/02/2012
+</td>
+<td style="text-align:center;">
+21/02/2022
+</td>
+<td style="text-align:center;">
+0.25%
+</td>
+<td style="text-align:center;">
+receiver
+</td>
+<td style="text-align:center;">
+FALSE
+</td>
+<td style="text-align:center;">
+6
+</td>
+<td style="text-align:center;">
+12
+</td>
+<td style="text-align:center;">
+act/365
+</td>
+<td style="text-align:center;">
+act/365
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Swap 2y16y
+</td>
+<td style="text-align:center;">
+EUR
+</td>
+<td style="text-align:center;">
+7,500,000
+</td>
+<td style="text-align:center;">
+14/04/2021
+</td>
+<td style="text-align:center;">
+14/04/2037
+</td>
+<td style="text-align:center;">
+1.50%
+</td>
+<td style="text-align:center;">
+payer
+</td>
+<td style="text-align:center;">
+FALSE
+</td>
+<td style="text-align:center;">
+12
+</td>
+<td style="text-align:center;">
+12
+</td>
+<td style="text-align:center;">
+act/365
+</td>
+<td style="text-align:center;">
+act/360
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>These are the columns that have to be in the</p>
+<ul>
+<li><strong>ID</strong> (character) is a custom ID for the swap</li>
+<li><strong>currency</strong> (character) as per the ISO 4217 standard</li>
+<li><strong>notional</strong> (numeric)</li>
+<li><strong>start.date</strong> (Date)</li>
+<li><strong>maturity.date</strong> (Date)</li>
+<li><strong>strike</strong> (numeric)</li>
+<li><strong>type</strong> (string) either <em>payer</em> or <em>receiver</em>. It is not case-sensitive.</li>
+<li><strong>standard</strong> (logical)</li>
+</ul>
+<p>Only if the field <em>standard</em> is set to FALSE then we need four additional fields.</p>
+<p>An example of portfolio is provided with the package and is called <em>swap.basket</em>.</p>
+<ul>
+<li><strong>time.unit.pay</strong> and <strong>time.unit.receive</strong> (integer) are the number of months for the frequency of the leg (ie. monthly would have a time.unit of 1, quarterly of 3, semiannual of 6 and annual of 12)</li>
+<li><strong>dcc.pay</strong> and <em>dc..receive</em> (character) as per the <em>fmdates</em> helper</li>
+</ul></li>
+<li><p>The date at which the swaps are being priced</p></li>
+<li><p>As many interest rate lists as per the currencies in the swap portfolio.
+The list is made of a string with the code of the currency and a with a tibble
+with the discounting factor curve with two columns: Dates and Discount Factors (df).
+Here is the structure of interest rate object:</p>
+<pre class="r"><code>str(SwapPricer::EUR.curves)</code></pre>
+<pre><code>## List of 2
+##  $ currency: chr &quot;EUR&quot;
+##  $ discount:Classes &#39;tbl_df&#39;, &#39;tbl&#39; and &#39;data.frame&#39;:    26 obs. of  2 variables:
+##   ..$ Date: Date[1:26], format: &quot;2019-04-15&quot; ...
+##   ..$ df  : num [1:26] 1 1 1 1 1 ...</code></pre>
+<p>Where the <em>discount</em> tibble of the list has the same characteristics of the <code>df.table</code> object described in <a href="https://www.curiousfrm.com/2019/04/real-world-tidy-interest-rate-swap-pricing/">this post</a>
+For your reference, I provided three curve objects with the package: <em>EUR.curves</em>, <em>GBP.curves</em> and
+<em>USD.curves</em></p></li>
 </ol>
-<pre class="r"><code>Investments &lt;- tibble(ccy = c(rep(&quot;EUR&quot;,2), rep(&quot;JPY&quot;,3), rep(&quot;GBP&quot;,3)),
-                      local_MV = c(1.5e6,1.2e6,2e8,1.5e8,3e8,1e6,1.5e6,2e6)) %&gt;% 
-  mutate(local_MV = as.double(local_MV)) %&gt;% 
-  mutate(EUR_MV = local_MV)
+<p>Now we can price our test multi-currency and non-standard swap portfolio by simply running <code>SwapPortfolioPricing</code> function with the three items in the order of description and appending as many curves as the number of currencies in the book.</p>
+<p>A sample code is shown here:</p>
+<pre class="r"><code>today &lt;- lubridate::ymd(20190414)
 
-Investments</code></pre>
-<pre><code>## # A tibble: 8 x 3
-##   ccy    local_MV    EUR_MV
-##   &lt;chr&gt;     &lt;dbl&gt;     &lt;dbl&gt;
-## 1 EUR     1500000   1500000
-## 2 EUR     1200000   1200000
-## 3 JPY   200000000 200000000
-## 4 JPY   150000000 150000000
-## 5 JPY   300000000 300000000
-## 6 GBP     1000000   1000000
-## 7 GBP     1500000   1500000
-## 8 GBP     2000000   2000000</code></pre>
-<p>I then store in a list the current currency FX rates</p>
-<pre class="r"><code>FX &lt;- list(&quot;JPY&quot; = 130, &quot;GBP&quot; = 0.8)</code></pre>
-<p>The first part of the algorithm consists in finding the rows of the Investments database which are subject to FX conversion for each of the currencies that are stored in the <strong>FX</strong> list using the <em>stringr</em> function <em>str_which</em>.</p>
-<p>This is the “parallel” part of the algorithm because it can be done currency by currency independently. We therefore use the <em>map</em> function of the <em>purrr</em> package.</p>
-<pre class="r"><code>pos_ccy &lt;- map(names(FX), ~str_which(Investments$ccy,.)) %&gt;% 
-  set_names(names(FX))
-
-pos_ccy</code></pre>
-<pre><code>## $JPY
-## [1] 3 4 5
-## 
-## $GBP
-## [1] 6 7 8</code></pre>
-<p>This list contains the row numbers for which there is an investment denominated in each of the currencies in the FX universe.
-We then use this information together with the actual FX rate to convert the investments’ local market value. We now use the <em>map2</em> function.</p>
-<pre class="r"><code>converted_MV &lt;- map2(pos_ccy, FX ,~Investments$local_MV[.x]/.y)
-
-converted_MV</code></pre>
-<pre><code>## $JPY
-## [1] 1538462 1153846 2307692
-## 
-## $GBP
-## [1] 1250000 1875000 2500000</code></pre>
-<p>We can notice that we now have a list made by two different vectors of converted market values. We need to consolidate those into the EUR_MV column in the Investments dataset.</p>
-<p>This is the second step of the algorithm that uses the <em>reduce</em> function of <em>purrr</em></p>
-<pre class="r"><code>Investments$EUR_MV[pos_ccy %&gt;% reduce(c)] &lt;- converted_MV %&gt;% 
-  reduce(c)
-
-Investments</code></pre>
-<pre><code>## # A tibble: 8 x 3
-##   ccy    local_MV   EUR_MV
-##   &lt;chr&gt;     &lt;dbl&gt;    &lt;dbl&gt;
-## 1 EUR     1500000 1500000 
-## 2 EUR     1200000 1200000 
-## 3 JPY   200000000 1538462.
-## 4 JPY   150000000 1153846.
-## 5 JPY   300000000 2307692.
-## 6 GBP     1000000 1250000 
-## 7 GBP     1500000 1875000 
-## 8 GBP     2000000 2500000</code></pre>
-<p>This function modifies rows of the EUR_MV field by reducing the lists from the map functions into vectors.</p>
-<p>We can notice that the EUR positions have not changed their market value.</p>
+results &lt;- SwapPricer::SwapPortfolioPricing(SwapPricer::swap.basket, 
+                                            today, 
+                                            SwapPricer::EUR.curves, 
+                                            SwapPricer::GBP.curves, 
+                                            SwapPricer::USD.curves)</code></pre>
+<p>and these are the results in table format:</p>
+<div style="border: 1px solid #ddd; padding: 5px; overflow-x: scroll; width:730px; ">
+<table>
+<caption>
+<span id="tab:unnamed-chunk-5">Table 2: </span>Pricing results
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+swap.id
+</th>
+<th style="text-align:left;">
+currency
+</th>
+<th style="text-align:right;">
+clean.mv
+</th>
+<th style="text-align:right;">
+dirty.mv
+</th>
+<th style="text-align:right;">
+accrual.pay
+</th>
+<th style="text-align:right;">
+accrual.receive
+</th>
+<th style="text-align:right;">
+par
+</th>
+<th style="text-align:right;">
+pv01
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Swap 25y
+</td>
+<td style="text-align:left;">
+EUR
+</td>
+<td style="text-align:right;">
+-881,814.61
+</td>
+<td style="text-align:right;">
+-874,994.31
+</td>
+<td style="text-align:right;">
+5,441.11
+</td>
+<td style="text-align:right;">
+1,379.18
+</td>
+<td style="text-align:right;">
+0.77%
+</td>
+<td style="text-align:right;">
+-12,393.65
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Swap 30y
+</td>
+<td style="text-align:left;">
+GBP
+</td>
+<td style="text-align:right;">
+105,100.47
+</td>
+<td style="text-align:right;">
+104,668.39
+</td>
+<td style="text-align:right;">
+-4,712.33
+</td>
+<td style="text-align:right;">
+4,280.26
+</td>
+<td style="text-align:right;">
+1.54%
+</td>
+<td style="text-align:right;">
+1,948.54
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Swap 10y
+</td>
+<td style="text-align:left;">
+USD
+</td>
+<td style="text-align:right;">
+-119,319.88
+</td>
+<td style="text-align:right;">
+-126,214.04
+</td>
+<td style="text-align:right;">
+-7,630.28
+</td>
+<td style="text-align:right;">
+736.11
+</td>
+<td style="text-align:right;">
+2.43%
+</td>
+<td style="text-align:right;">
+-548.15
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Swap 2y16y
+</td>
+<td style="text-align:left;">
+GBP
+</td>
+<td style="text-align:right;">
+-94,850.43
+</td>
+<td style="text-align:right;">
+-94,850.43
+</td>
+<td style="text-align:right;">
+-0.00
+</td>
+<td style="text-align:right;">
+0.00
+</td>
+<td style="text-align:right;">
+1.59%
+</td>
+<td style="text-align:right;">
+-10,393.05
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Swap non standard
+</td>
+<td style="text-align:left;">
+EUR
+</td>
+<td style="text-align:right;">
+-2,591,763.24
+</td>
+<td style="text-align:right;">
+-2,861,567.21
+</td>
+<td style="text-align:right;">
+-263,835.62
+</td>
+<td style="text-align:right;">
+-5,968.36
+</td>
+<td style="text-align:right;">
+1.07%
+</td>
+<td style="text-align:right;">
+27,917.04
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Swap 10y semi fixed
+</td>
+<td style="text-align:left;">
+EUR
+</td>
+<td style="text-align:right;">
+-16,340.53
+</td>
+<td style="text-align:right;">
+-29,897.79
+</td>
+<td style="text-align:right;">
+-3,808.22
+</td>
+<td style="text-align:right;">
+-9,749.04
+</td>
+<td style="text-align:right;">
+0.07%
+</td>
+<td style="text-align:right;">
+5,132.42
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Swap 30y quarter floating
+</td>
+<td style="text-align:left;">
+GBP
+</td>
+<td style="text-align:right;">
+88,255.22
+</td>
+<td style="text-align:right;">
+105,650.31
+</td>
+<td style="text-align:right;">
+-2,056.96
+</td>
+<td style="text-align:right;">
+19,452.05
+</td>
+<td style="text-align:right;">
+1.55%
+</td>
+<td style="text-align:right;">
+-1,941.05
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Swap 10y irregular
+</td>
+<td style="text-align:left;">
+USD
+</td>
+<td style="text-align:right;">
+-119,595.14
+</td>
+<td style="text-align:right;">
+-126,677.82
+</td>
+<td style="text-align:right;">
+-7,795.01
+</td>
+<td style="text-align:right;">
+712.33
+</td>
+<td style="text-align:right;">
+2.44%
+</td>
+<td style="text-align:right;">
+-546.46
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Swap 2y16y
+</td>
+<td style="text-align:left;">
+EUR
+</td>
+<td style="text-align:right;">
+-361,098.10
+</td>
+<td style="text-align:right;">
+-361,098.10
+</td>
+<td style="text-align:right;">
+-0.00
+</td>
+<td style="text-align:right;">
+0.00
+</td>
+<td style="text-align:right;">
+1.18%
+</td>
+<td style="text-align:right;">
+11,170.90
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="so-long-rquantlib" class="section level2">
+<h2>So long RQuantLib</h2>
+<p>Apart from the new definition of the curve object, most of the changes have happened “behind the scenes”. One thing that I had to do to make the deployment easier on all the OSs was to remove any reference to Quantlib. I am a huge fan of the RQuantLib package, but I realised I was using it just for adjusting dates for holidays. So I decided to take a different approach:</p>
+<ol style="list-style-type: decimal">
+<li>I downloaded all the holidays and saved it as internal objects in my package</li>
+<li>I created a very simple routine to adjust for holidays, as in the following piece of code:</li>
+</ol>
+<pre class="r"><code>AdvanceDate &lt;- function(dates, currency, eom.check) {
+  holiday &lt;- holidays[[currency]]
+  check &lt;- TRUE %in% ((dates %in% holiday) |
+                        (weekdays(dates) %in% &quot;Saturday&quot;) |
+                        (weekdays(dates) %in% &quot;Sunday&quot;))
+  if (check) {
+    repeat {
+      if (eom.check) {
+        dates &lt;- dplyr::case_when((dates %in% holiday) ~ dates - 1,
+                                      (weekdays(dates) %in% &quot;Saturday&quot;) ~ dates - 1,
+                                      (weekdays(dates) %in% &quot;Sunday&quot;) ~ dates - 2,
+                                      TRUE ~ dates)
+      } else {
+        dates &lt;- dplyr::case_when((dates %in% holiday) ~ dates + 1,
+                                      (weekdays(dates) %in% &quot;Saturday&quot;) ~ dates + 2,
+                                      (weekdays(dates) %in% &quot;Sunday&quot;) ~ dates + 1,
+                                      TRUE ~ dates)
+      }
+      check &lt;- TRUE %in% ((dates %in% holiday) |
+                            (weekdays(dates) %in% &quot;Saturday&quot;) |
+                            (weekdays(dates) %in% &quot;Sunday&quot;))
+      if (!check) {
+        return(dates)
+      }
+    }
+  } else {
+    return(dates)
+  }
+}</code></pre>
+<p>You can see that adjusting for holidays is a recursive exercise: let’s assume we have Easter Sunday in the cashflow schedule. It automatically gets adjusted to Monday, but isince Easter Monday is also an holiday, the function will run a second time to further advance to Tuesday.</p>
+<p>The performance of the function is guaranteed by the fact that the <strong>dplyr::case_when</strong> function is vectorised. In fact, the overall procedure takes almost the same time to run as with the RQuantLib function.</p>
+</div>
 
               
             </div>
@@ -391,9 +1098,13 @@ Investments</code></pre>
                   <div class="post-footer-tags">
                     <span class="text-color-light text-small">TAGGED IN</span><br/>
                     
+  <a class="tag tag--primary tag--small" href="/tags/coding/">Coding</a>
+
+  <a class="tag tag--primary tag--small" href="/tags/swappricer/">SwapPricer</a>
+
   <a class="tag tag--primary tag--small" href="/tags/r/">R</a>
 
-  <a class="tag tag--primary tag--small" href="/tags/fx/">FX</a>
+  <a class="tag tag--primary tag--small" href="/tags/toolbox/">Toolbox</a>
 
                   </div>
                 
@@ -406,7 +1117,7 @@ Investments</code></pre>
           
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--default tooltip--top" href="/2019/02/my-first-tidytuesday-submission/" data-tooltip="My First #TidyTuesday Submission">
+                <a class="post-action-btn btn btn--disabled">
               
                   <i class="fa fa-angle-left"></i>
                   <span class="hide-xs hide-sm text-small icon-ml">NEXT</span>
@@ -414,7 +1125,7 @@ Investments</code></pre>
             </li>
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--default tooltip--top" href="/2018/01/generate-scenarios-correlated-to-existing-ones/" data-tooltip="Generate scenarios correlated to existing ones">
+                <a class="post-action-btn btn btn--default tooltip--top" href="/2019/07/swappricer-is-on-github/" data-tooltip="SwapPricer is on Github">
               
                   <span class="hide-xs hide-sm text-small icon-mr">PREVIOUS</span>
                   <i class="fa fa-angle-right"></i>
@@ -432,13 +1143,13 @@ Investments</code></pre>
         </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=/2018/02/convert-foreign-currency-valuations/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=/2019/09/multicurrency-swap-pricing/">
               <i class="fa fa-facebook-official"></i>
             </a>
           </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=/2018/02/convert-foreign-currency-valuations/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=/2019/09/multicurrency-swap-pricing/">
               <i class="fa fa-twitter"></i>
             </a>
           </li>
@@ -486,7 +1197,7 @@ Investments</code></pre>
           
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--default tooltip--top" href="/2019/02/my-first-tidytuesday-submission/" data-tooltip="My First #TidyTuesday Submission">
+                <a class="post-action-btn btn btn--disabled">
               
                   <i class="fa fa-angle-left"></i>
                   <span class="hide-xs hide-sm text-small icon-ml">NEXT</span>
@@ -494,7 +1205,7 @@ Investments</code></pre>
             </li>
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--default tooltip--top" href="/2018/01/generate-scenarios-correlated-to-existing-ones/" data-tooltip="Generate scenarios correlated to existing ones">
+                <a class="post-action-btn btn btn--default tooltip--top" href="/2019/07/swappricer-is-on-github/" data-tooltip="SwapPricer is on Github">
               
                   <span class="hide-xs hide-sm text-small icon-mr">PREVIOUS</span>
                   <i class="fa fa-angle-right"></i>
@@ -512,13 +1223,13 @@ Investments</code></pre>
         </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=/2018/02/convert-foreign-currency-valuations/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=/2019/09/multicurrency-swap-pricing/">
               <i class="fa fa-facebook-official"></i>
             </a>
           </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=/2018/02/convert-foreign-currency-valuations/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=/2019/09/multicurrency-swap-pricing/">
               <i class="fa fa-twitter"></i>
             </a>
           </li>
@@ -548,13 +1259,13 @@ Investments</code></pre>
   <ul class="share-options">
     
       <li class="share-option">
-        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=%2F2018%2F02%2Fconvert-foreign-currency-valuations%2F">
+        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=%2F2019%2F09%2Fmulticurrency-swap-pricing%2F">
           <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
         </a>
       </li>
     
       <li class="share-option">
-        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=%2F2018%2F02%2Fconvert-foreign-currency-valuations%2F">
+        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=%2F2019%2F09%2Fmulticurrency-swap-pricing%2F">
           <i class="fa fa-twitter"></i><span>Share on Twitter</span>
         </a>
       </li>
@@ -858,9 +1569,9 @@ $(document).ready(function() {
     
       <script>
         var disqus_config = function () {
-          this.page.url = '\/2018\/02\/convert-foreign-currency-valuations\/';
+          this.page.url = '\/2019\/09\/multicurrency-swap-pricing\/';
           
-            this.page.identifier = '\/2018\/02\/convert-foreign-currency-valuations\/'
+            this.page.identifier = '\/2019\/09\/multicurrency-swap-pricing\/'
           
         };
         (function() {

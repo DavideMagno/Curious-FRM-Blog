@@ -1,7 +1,7 @@
 ---
 title: SwapPricer is on Github
 author: Davide Magno
-date: '`r Sys.Date()`'
+date: '2019-07-29'
 slug: swappricer-is-on-github
 categories:
   - Finance
@@ -21,7 +21,7 @@ Ok, the name is not super original, but it should at least be easy to remember.
 
 You can install it as follows:
 
-```{r, message=FALSE, eval = FALSE}
+```{r, message = FALSE, eval = FALSE}
 # library(devtools)
 devtools::install_github("DavideMagno/SwapPricer")
 ```
@@ -39,7 +39,9 @@ In order to price a swap you just need to run the following code.
 
 ```{r example, warning=FALSE, message=FALSE}
 library(SwapPricer)
-SwapPortfolioPricing(SwapPricer::swap.basket, lubridate::ymd(20190414), SwapPricer::df.table)
+portfolio <- SwapPricer::swap.basket %>% 
+  dplyr::filter(grepl("EUR", .$currency))
+SwapPortfolioPricing(portfolio, lubridate::ymd(20190414), SwapPricer::EUR.curves)
 ```
 
 You can see that I have used two objects that are delivered with the package:
@@ -47,7 +49,7 @@ You can see that I have used two objects that are delivered with the package:
 * *swap.basket* which consists in a 5 swaps portfolio that can be referenced as
 blueprint for your swap portfolio
 
-* *df.table* this is the discount curve downloaded from Bloomberg as at the 14th
+* *EUR.curves* this is the discount curve downloaded from Bloomberg as at the 14th
 of April 2019
 
 We have tested the package using a 500 swaps portfolio and the results, in terms
@@ -55,7 +57,7 @@ of performance are very encouraging. We analyse them using the amazing *profvis*
 tool.
 
 ```{r, echo = FALSE}
-profvis::profvis({SwapPortfolioPricing(SwapPricer:::realworld.portfolio, lubridate::ymd(20190414), df.table)})
+profvis::profvis({SwapPortfolioPricing(SwapPricer:::realworld.portfolio, lubridate::ymd(20190414), SwapPricer::EUR.curves)})
 ```
 
 The results are quite interesting as they show we can split the code in three parts:
@@ -90,7 +92,7 @@ page of RQuantLib, let's hope they'll want to implement a vectorised version of 
 cashflow functions.
 
 
-  3) The actual pricing of the 500 swaps takes less than 1 second. This is very 
+  3) The actual pricing of the 500 swaps takes around 1 second. This is very 
 encouraging because when it will come to curve optimisation (formerly known as
 **bootstrapping**) or risk sensitivities and scenarios, parts 1 and 2 will be run
 once at the beginning of the process while part 3 will be run multiple times.

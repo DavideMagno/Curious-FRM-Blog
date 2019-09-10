@@ -33,7 +33,7 @@ Let's start the pricing of the swap portfolio with purrr by loading from an exte
 ```{r, message = FALSE, warning = FALSE}
 today <- lubridate::ymd(20190414)
 
-ir_curve <- readr::read_csv(here::here("data/Basket of IRS/Curve at 140419.csv"))
+ir_curve <- readr::read_csv(here::here("csv/Basket of IRS/Curve at 140419.csv"))
 
 ir_curve %>% 
   knitr::kable(caption = "Input from Bloomberg", "html") %>% 

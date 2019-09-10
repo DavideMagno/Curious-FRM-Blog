@@ -1,0 +1,802 @@
+---
+title: Multi Currency Swap Pricing with SwapPricer
+author: Davide Magno
+date: '2019-09-10'
+slug: multicurrency-swap-pricing
+categories:
+  - Finance
+tags:
+  - Coding
+  - SwapPricer
+  - R
+  - Toolbox
+keywords:
+  - tech
+---
+
+<script src="/rmarkdown-libs/kePrint/kePrint.js"></script>
+
+
+<pre><code>## 
+##   
+   checking for file ‘/private/var/folders/hf/3zd2l68s4xv13k7rbf1k51xw0000gn/T/RtmpZJz55Z/remotesa7a54189936/DavideMagno-SwapPricer-6cadd22/DESCRIPTION’ ...
+  
+✔  checking for file ‘/private/var/folders/hf/3zd2l68s4xv13k7rbf1k51xw0000gn/T/RtmpZJz55Z/remotesa7a54189936/DavideMagno-SwapPricer-6cadd22/DESCRIPTION’
+## 
+  
+─  preparing ‘SwapPricer’:
+## 
+  
+   checking DESCRIPTION meta-information ...
+  
+✔  checking DESCRIPTION meta-information
+## 
+  
+─  checking for LF line-endings in source and make files and shell scripts
+## 
+  
+─  checking for empty or unneeded directories
+## ─  looking to see if a ‘data/datalist’ file should be added
+## 
+  
+─  building ‘SwapPricer_1.0.2.tar.gz’
+## 
+  
+   
+## </code></pre>
+<p>I have released a new version of the package <strong>SwapPricer</strong> on GitHub
+<a href="https://github.com/DavideMagno/SwapPricer">here</a>.</p>
+<p>As we are now at version 1.0.1 the toolbox is able to price using just a
+one-curve framework but is able to price multiple currencies (ie. CHF, EUR, GBP,
+JPY and USD) and any convention in terms of coupon frequency, day count convention.</p>
+<p><strong>We are working to introduce OIS Discounting in the next releases</strong></p>
+<div id="swappricer-instructions-for-use" class="section level2">
+<h2>SwapPricer: instructions for use</h2>
+<p>To run a multi-currency swap portfolio valuation you need the following three
+“ingredients”:</p>
+<ol style="list-style-type: decimal">
+<li><p>A table with the characteristics of the swap, like the following one</p>
+<div style="border: 1px solid #ddd; padding: 5px; overflow-x: scroll; width:690px; ">
+<table>
+<caption>
+<span id="tab:unnamed-chunk-2">Table 1: </span>Swap portfolio
+</caption>
+<thead>
+<tr>
+<th style="text-align:center;">
+ID
+</th>
+<th style="text-align:center;">
+currency
+</th>
+<th style="text-align:center;">
+notional
+</th>
+<th style="text-align:center;">
+start.date
+</th>
+<th style="text-align:center;">
+maturity.date
+</th>
+<th style="text-align:center;">
+strike
+</th>
+<th style="text-align:center;">
+type
+</th>
+<th style="text-align:center;">
+standard
+</th>
+<th style="text-align:center;">
+time.unit.pay
+</th>
+<th style="text-align:center;">
+time.unit.receive
+</th>
+<th style="text-align:center;">
+dcc.pay
+</th>
+<th style="text-align:center;">
+dcc.receive
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">
+Swap 25y
+</td>
+<td style="text-align:center;">
+EUR
+</td>
+<td style="text-align:center;">
+10,000,000
+</td>
+<td style="text-align:center;">
+19/01/2007
+</td>
+<td style="text-align:center;">
+19/01/2032
+</td>
+<td style="text-align:center;">
+0.06%
+</td>
+<td style="text-align:center;">
+receiver
+</td>
+<td style="text-align:center;">
+TRUE
+</td>
+<td style="text-align:center;">
+NA
+</td>
+<td style="text-align:center;">
+NA
+</td>
+<td style="text-align:center;">
+NA
+</td>
+<td style="text-align:center;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Swap 30y
+</td>
+<td style="text-align:center;">
+GBP
+</td>
+<td style="text-align:center;">
+1,000,000
+</td>
+<td style="text-align:center;">
+24/04/2012
+</td>
+<td style="text-align:center;">
+24/04/2042
+</td>
+<td style="text-align:center;">
+1.00%
+</td>
+<td style="text-align:center;">
+payer
+</td>
+<td style="text-align:center;">
+TRUE
+</td>
+<td style="text-align:center;">
+NA
+</td>
+<td style="text-align:center;">
+NA
+</td>
+<td style="text-align:center;">
+NA
+</td>
+<td style="text-align:center;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Swap 10y
+</td>
+<td style="text-align:center;">
+USD
+</td>
+<td style="text-align:center;">
+2,000,000
+</td>
+<td style="text-align:center;">
+21/02/2012
+</td>
+<td style="text-align:center;">
+21/02/2022
+</td>
+<td style="text-align:center;">
+0.25%
+</td>
+<td style="text-align:center;">
+receiver
+</td>
+<td style="text-align:center;">
+TRUE
+</td>
+<td style="text-align:center;">
+NA
+</td>
+<td style="text-align:center;">
+NA
+</td>
+<td style="text-align:center;">
+NA
+</td>
+<td style="text-align:center;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Swap 2y16y
+</td>
+<td style="text-align:center;">
+GBP
+</td>
+<td style="text-align:center;">
+7,500,000
+</td>
+<td style="text-align:center;">
+14/04/2021
+</td>
+<td style="text-align:center;">
+14/04/2037
+</td>
+<td style="text-align:center;">
+1.50%
+</td>
+<td style="text-align:center;">
+receiver
+</td>
+<td style="text-align:center;">
+TRUE
+</td>
+<td style="text-align:center;">
+NA
+</td>
+<td style="text-align:center;">
+NA
+</td>
+<td style="text-align:center;">
+NA
+</td>
+<td style="text-align:center;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Swap non standard
+</td>
+<td style="text-align:center;">
+EUR
+</td>
+<td style="text-align:center;">
+15,000,000
+</td>
+<td style="text-align:center;">
+26/05/2014
+</td>
+<td style="text-align:center;">
+26/05/2039
+</td>
+<td style="text-align:center;">
+2.00%
+</td>
+<td style="text-align:center;">
+payer
+</td>
+<td style="text-align:center;">
+FALSE
+</td>
+<td style="text-align:center;">
+12
+</td>
+<td style="text-align:center;">
+3
+</td>
+<td style="text-align:center;">
+act/365
+</td>
+<td style="text-align:center;">
+act/365
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Swap 10y semi fixed
+</td>
+<td style="text-align:center;">
+EUR
+</td>
+<td style="text-align:center;">
+10,000,000
+</td>
+<td style="text-align:center;">
+26/05/2014
+</td>
+<td style="text-align:center;">
+26/05/2024
+</td>
+<td style="text-align:center;">
+0.10%
+</td>
+<td style="text-align:center;">
+payer
+</td>
+<td style="text-align:center;">
+FALSE
+</td>
+<td style="text-align:center;">
+6
+</td>
+<td style="text-align:center;">
+6
+</td>
+<td style="text-align:center;">
+act/365
+</td>
+<td style="text-align:center;">
+act/365
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Swap 30y quarter floating
+</td>
+<td style="text-align:center;">
+GBP
+</td>
+<td style="text-align:center;">
+1,000,000
+</td>
+<td style="text-align:center;">
+24/04/2012
+</td>
+<td style="text-align:center;">
+24/04/2042
+</td>
+<td style="text-align:center;">
+2.00%
+</td>
+<td style="text-align:center;">
+receiver
+</td>
+<td style="text-align:center;">
+FALSE
+</td>
+<td style="text-align:center;">
+3
+</td>
+<td style="text-align:center;">
+12
+</td>
+<td style="text-align:center;">
+act/360
+</td>
+<td style="text-align:center;">
+act/365
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Swap 10y irregular
+</td>
+<td style="text-align:center;">
+USD
+</td>
+<td style="text-align:center;">
+2,000,000
+</td>
+<td style="text-align:center;">
+21/02/2012
+</td>
+<td style="text-align:center;">
+21/02/2022
+</td>
+<td style="text-align:center;">
+0.25%
+</td>
+<td style="text-align:center;">
+receiver
+</td>
+<td style="text-align:center;">
+FALSE
+</td>
+<td style="text-align:center;">
+6
+</td>
+<td style="text-align:center;">
+12
+</td>
+<td style="text-align:center;">
+act/365
+</td>
+<td style="text-align:center;">
+act/365
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Swap 2y16y
+</td>
+<td style="text-align:center;">
+EUR
+</td>
+<td style="text-align:center;">
+7,500,000
+</td>
+<td style="text-align:center;">
+14/04/2021
+</td>
+<td style="text-align:center;">
+14/04/2037
+</td>
+<td style="text-align:center;">
+1.50%
+</td>
+<td style="text-align:center;">
+payer
+</td>
+<td style="text-align:center;">
+FALSE
+</td>
+<td style="text-align:center;">
+12
+</td>
+<td style="text-align:center;">
+12
+</td>
+<td style="text-align:center;">
+act/365
+</td>
+<td style="text-align:center;">
+act/360
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>These are the columns that have to be in the</p>
+<ul>
+<li><strong>ID</strong> (character) is a custom ID for the swap</li>
+<li><strong>currency</strong> (character) as per the ISO 4217 standard</li>
+<li><strong>notional</strong> (numeric)</li>
+<li><strong>start.date</strong> (Date)</li>
+<li><strong>maturity.date</strong> (Date)</li>
+<li><strong>strike</strong> (numeric)</li>
+<li><strong>type</strong> (string) either <em>payer</em> or <em>receiver</em>. It is not case-sensitive.</li>
+<li><strong>standard</strong> (logical)</li>
+</ul>
+<p>Only if the field <em>standard</em> is set to FALSE then we need four additional fields.</p>
+<p>An example of portfolio is provided with the package and is called <em>swap.basket</em>.</p>
+<ul>
+<li><strong>time.unit.pay</strong> and <strong>time.unit.receive</strong> (integer) are the number of months for the frequency of the leg (ie. monthly would have a time.unit of 1, quarterly of 3, semiannual of 6 and annual of 12)</li>
+<li><strong>dcc.pay</strong> and <em>dc..receive</em> (character) as per the <em>fmdates</em> helper</li>
+</ul></li>
+<li><p>The date at which the swaps are being priced</p></li>
+<li><p>As many interest rate lists as per the currencies in the swap portfolio.
+The list is made of a string with the code of the currency and a with a tibble
+with the discounting factor curve with two columns: Dates and Discount Factors (df).
+Here is the structure of interest rate object:</p>
+<pre class="r"><code>str(SwapPricer::EUR.curves)</code></pre>
+<pre><code>## List of 2
+##  $ currency: chr &quot;EUR&quot;
+##  $ discount:Classes &#39;tbl_df&#39;, &#39;tbl&#39; and &#39;data.frame&#39;:    26 obs. of  2 variables:
+##   ..$ Date: Date[1:26], format: &quot;2019-04-15&quot; ...
+##   ..$ df  : num [1:26] 1 1 1 1 1 ...</code></pre>
+<p>Where the <em>discount</em> tibble of the list has the same characteristics of the <code>df.table</code> object described in <a href="https://www.curiousfrm.com/2019/04/real-world-tidy-interest-rate-swap-pricing/">this post</a>
+For your reference, I provided three curve objects with the package: <em>EUR.curves</em>, <em>GBP.curves</em> and
+<em>USD.curves</em></p></li>
+</ol>
+<p>Now we can price our test multi-currency and non-standard swap portfolio by simply running <code>SwapPortfolioPricing</code> function with the three items in the order of description and appending as many curves as the number of currencies in the book.</p>
+<p>A sample code is shown here:</p>
+<pre class="r"><code>today &lt;- lubridate::ymd(20190414)
+
+results &lt;- SwapPricer::SwapPortfolioPricing(SwapPricer::swap.basket, 
+                                            today, 
+                                            SwapPricer::EUR.curves, 
+                                            SwapPricer::GBP.curves, 
+                                            SwapPricer::USD.curves)</code></pre>
+<p>and these are the results in table format:</p>
+<div style="border: 1px solid #ddd; padding: 5px; overflow-x: scroll; width:730px; ">
+<table>
+<caption>
+<span id="tab:unnamed-chunk-5">Table 2: </span>Pricing results
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+swap.id
+</th>
+<th style="text-align:left;">
+currency
+</th>
+<th style="text-align:right;">
+clean.mv
+</th>
+<th style="text-align:right;">
+dirty.mv
+</th>
+<th style="text-align:right;">
+accrual.pay
+</th>
+<th style="text-align:right;">
+accrual.receive
+</th>
+<th style="text-align:right;">
+par
+</th>
+<th style="text-align:right;">
+pv01
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Swap 25y
+</td>
+<td style="text-align:left;">
+EUR
+</td>
+<td style="text-align:right;">
+-881,814.61
+</td>
+<td style="text-align:right;">
+-874,994.31
+</td>
+<td style="text-align:right;">
+5,441.11
+</td>
+<td style="text-align:right;">
+1,379.18
+</td>
+<td style="text-align:right;">
+0.77%
+</td>
+<td style="text-align:right;">
+-12,393.65
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Swap 30y
+</td>
+<td style="text-align:left;">
+GBP
+</td>
+<td style="text-align:right;">
+105,100.47
+</td>
+<td style="text-align:right;">
+104,668.39
+</td>
+<td style="text-align:right;">
+-4,712.33
+</td>
+<td style="text-align:right;">
+4,280.26
+</td>
+<td style="text-align:right;">
+1.54%
+</td>
+<td style="text-align:right;">
+1,948.54
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Swap 10y
+</td>
+<td style="text-align:left;">
+USD
+</td>
+<td style="text-align:right;">
+-119,319.88
+</td>
+<td style="text-align:right;">
+-126,214.04
+</td>
+<td style="text-align:right;">
+-7,630.28
+</td>
+<td style="text-align:right;">
+736.11
+</td>
+<td style="text-align:right;">
+2.43%
+</td>
+<td style="text-align:right;">
+-548.15
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Swap 2y16y
+</td>
+<td style="text-align:left;">
+GBP
+</td>
+<td style="text-align:right;">
+-94,850.43
+</td>
+<td style="text-align:right;">
+-94,850.43
+</td>
+<td style="text-align:right;">
+-0.00
+</td>
+<td style="text-align:right;">
+0.00
+</td>
+<td style="text-align:right;">
+1.59%
+</td>
+<td style="text-align:right;">
+-10,393.05
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Swap non standard
+</td>
+<td style="text-align:left;">
+EUR
+</td>
+<td style="text-align:right;">
+-2,591,763.24
+</td>
+<td style="text-align:right;">
+-2,861,567.21
+</td>
+<td style="text-align:right;">
+-263,835.62
+</td>
+<td style="text-align:right;">
+-5,968.36
+</td>
+<td style="text-align:right;">
+1.07%
+</td>
+<td style="text-align:right;">
+27,917.04
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Swap 10y semi fixed
+</td>
+<td style="text-align:left;">
+EUR
+</td>
+<td style="text-align:right;">
+-16,340.53
+</td>
+<td style="text-align:right;">
+-29,897.79
+</td>
+<td style="text-align:right;">
+-3,808.22
+</td>
+<td style="text-align:right;">
+-9,749.04
+</td>
+<td style="text-align:right;">
+0.07%
+</td>
+<td style="text-align:right;">
+5,132.42
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Swap 30y quarter floating
+</td>
+<td style="text-align:left;">
+GBP
+</td>
+<td style="text-align:right;">
+88,255.22
+</td>
+<td style="text-align:right;">
+105,650.31
+</td>
+<td style="text-align:right;">
+-2,056.96
+</td>
+<td style="text-align:right;">
+19,452.05
+</td>
+<td style="text-align:right;">
+1.55%
+</td>
+<td style="text-align:right;">
+-1,941.05
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Swap 10y irregular
+</td>
+<td style="text-align:left;">
+USD
+</td>
+<td style="text-align:right;">
+-119,595.14
+</td>
+<td style="text-align:right;">
+-126,677.82
+</td>
+<td style="text-align:right;">
+-7,795.01
+</td>
+<td style="text-align:right;">
+712.33
+</td>
+<td style="text-align:right;">
+2.44%
+</td>
+<td style="text-align:right;">
+-546.46
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Swap 2y16y
+</td>
+<td style="text-align:left;">
+EUR
+</td>
+<td style="text-align:right;">
+-361,098.10
+</td>
+<td style="text-align:right;">
+-361,098.10
+</td>
+<td style="text-align:right;">
+-0.00
+</td>
+<td style="text-align:right;">
+0.00
+</td>
+<td style="text-align:right;">
+1.18%
+</td>
+<td style="text-align:right;">
+11,170.90
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="so-long-rquantlib" class="section level2">
+<h2>So long RQuantLib</h2>
+<p>Apart from the new definition of the curve object, most of the changes have happened “behind the scenes”. One thing that I had to do to make the deployment easier on all the OSs was to remove any reference to Quantlib. I am a huge fan of the RQuantLib package, but I realised I was using it just for adjusting dates for holidays. So I decided to take a different approach:</p>
+<ol style="list-style-type: decimal">
+<li>I downloaded all the holidays and saved it as internal objects in my package</li>
+<li>I created a very simple routine to adjust for holidays, as in the following piece of code:</li>
+</ol>
+<pre class="r"><code>AdvanceDate &lt;- function(dates, currency, eom.check) {
+  holiday &lt;- holidays[[currency]]
+  check &lt;- TRUE %in% ((dates %in% holiday) |
+                        (weekdays(dates) %in% &quot;Saturday&quot;) |
+                        (weekdays(dates) %in% &quot;Sunday&quot;))
+  if (check) {
+    repeat {
+      if (eom.check) {
+        dates &lt;- dplyr::case_when((dates %in% holiday) ~ dates - 1,
+                                      (weekdays(dates) %in% &quot;Saturday&quot;) ~ dates - 1,
+                                      (weekdays(dates) %in% &quot;Sunday&quot;) ~ dates - 2,
+                                      TRUE ~ dates)
+      } else {
+        dates &lt;- dplyr::case_when((dates %in% holiday) ~ dates + 1,
+                                      (weekdays(dates) %in% &quot;Saturday&quot;) ~ dates + 2,
+                                      (weekdays(dates) %in% &quot;Sunday&quot;) ~ dates + 1,
+                                      TRUE ~ dates)
+      }
+      check &lt;- TRUE %in% ((dates %in% holiday) |
+                            (weekdays(dates) %in% &quot;Saturday&quot;) |
+                            (weekdays(dates) %in% &quot;Sunday&quot;))
+      if (!check) {
+        return(dates)
+      }
+    }
+  } else {
+    return(dates)
+  }
+}</code></pre>
+<p>You can see that adjusting for holidays is a recursive exercise: let’s assume we have Easter Sunday in the cashflow schedule. It automatically gets adjusted to Monday, but isince Easter Monday is also an holiday, the function will run a second time to further advance to Tuesday.</p>
+<p>The performance of the function is guaranteed by the fact that the <strong>dplyr::case_when</strong> function is vectorised. In fact, the overall procedure takes almost the same time to run as with the RQuantLib function.</p>
+</div>

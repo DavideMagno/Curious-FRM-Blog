@@ -1,7 +1,7 @@
 ---
 title: Pricing floating legs of interest rate swaps
 author: Davide Magno
-date: '`r Sys.Date()`'
+date: '2019-07-08'
 slug: downloading-variable-rate
 categories:
   - Finance
@@ -13,7 +13,7 @@ keywords:
   - tech
 ---
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, message = FALSE}
 library(SwapPricer)
 ```
 
@@ -195,7 +195,10 @@ the rate information. For the fixed one, we just use the strike of the swap.
 Let's see the final result on the 25 years' swap we use as test:
 
 ```{r, echo = FALSE}
-SwapPortfolioPricing(SwapPricer::swap.basket, lubridate::ymd(20190414), SwapPricer::df.table) %>% 
+portfolio <- SwapPricer::swap.basket %>% 
+  dplyr::filter(grepl("EUR", .$currency))
+SwapPortfolioPricing(portfolio, lubridate::ymd(20190414), 
+                     SwapPricer::EUR.curves) %>% 
   dplyr::slice(1)
 ```
 
@@ -204,17 +207,3 @@ Let's compare the result with the Bloomberg screenshot
 ![](/post/2019-07-08-downloading-variable-rate_files/Pricing 25yrs floating.png)
 You can see that we now perfectly price also the receiving accrual and, of course, 
 also the total one.
-
-We finish today's post by looking at the pricing of the basket. You can see that
-now the algorithm correctly identifies what are the floating and the fixed legs
-depending on the type of the swap (ie receiver or payer).
-
-```{r, echo = FALSE}
-SwapPortfolioPricing(SwapPricer::swap.basket, lubridate::ymd(20190414), SwapPricer::df.table) %>% 
-  dplyr::slice(-nrow(.)) %>% 
-  dplyr::mutate_at(dplyr::vars("clean.mv","dirty.mv","accrual.pay",
-                               "accrual.receive","pv01"),formattable::comma) %>%
-  dplyr::mutate_at(dplyr::vars("par"), formattable::percent) %>%
-  knitr::kable(caption = "Pricing results", "html") %>%
-  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed","responsive"))
-```
