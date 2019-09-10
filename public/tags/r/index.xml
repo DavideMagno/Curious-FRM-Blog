@@ -21,33 +21,6 @@
 &lt;script src=&#34;/rmarkdown-libs/kePrint/kePrint.js&#34;&gt;&lt;/script&gt;
 
 
-&lt;pre&gt;&lt;code&gt;## 
-##   
-   checking for file ‘/private/var/folders/hf/3zd2l68s4xv13k7rbf1k51xw0000gn/T/RtmpZJz55Z/remotesa7a54189936/DavideMagno-SwapPricer-6cadd22/DESCRIPTION’ ...
-  
-✔  checking for file ‘/private/var/folders/hf/3zd2l68s4xv13k7rbf1k51xw0000gn/T/RtmpZJz55Z/remotesa7a54189936/DavideMagno-SwapPricer-6cadd22/DESCRIPTION’
-## 
-  
-─  preparing ‘SwapPricer’:
-## 
-  
-   checking DESCRIPTION meta-information ...
-  
-✔  checking DESCRIPTION meta-information
-## 
-  
-─  checking for LF line-endings in source and make files and shell scripts
-## 
-  
-─  checking for empty or unneeded directories
-## ─  looking to see if a ‘data/datalist’ file should be added
-## 
-  
-─  building ‘SwapPricer_1.0.2.tar.gz’
-## 
-  
-   
-## &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;I have released a new version of the package &lt;strong&gt;SwapPricer&lt;/strong&gt; on GitHub
 &lt;a href=&#34;https://github.com/DavideMagno/SwapPricer&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;As we are now at version 1.0.1 the toolbox is able to price using just a

@@ -16,7 +16,7 @@ keywords:
 
 ```{r, message = FALSE, echo = FALSE}
 # library(devtools)
-devtools::install_github("DavideMagno/SwapPricer")
+# devtools::install_github("DavideMagno/SwapPricer")
 `%>%` <- magrittr::`%>%`
 `%<>%` <- magrittr::`%<>%`
 ```
