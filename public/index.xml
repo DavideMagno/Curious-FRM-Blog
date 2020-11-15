@@ -6,10 +6,36 @@
     <description>Recent content on The CuRious Financial Risk ManageR</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 10 Sep 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 15 Nov 2020 00:00:00 +0000</lastBuildDate>
     
         <atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Shiny portfolio</title>
+      <link>/2020/11/shiny-portfolio.en-us/</link>
+      <pubDate>Sun, 15 Nov 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/2020/11/shiny-portfolio.en-us/</guid>
+      <description>
+&lt;script src=&#34;/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;p&gt;I will use this post as repository of all the publicly available shiny dashboards
+I have developed through time.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://davidemagno.com/apps/Swap_Rates/&#34;&gt;Online Interest Rate Swap Monitor&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2020-11-15-shiny-portfolio.en-us_files/SwapApp.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;An online application developed using R shiny to monitor in realtime the change in the the Interest Rate Swap market by scraping the web. Source data is automatically scraped from a third party website .&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://davidemagno.com/apps/ItalianCovidDashboard/&#34;&gt;Interactive Dashboard on Covid19 data in Italy&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2020-11-15-shiny-portfolio.en-us_files/ItalyCovid.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;An interactive dashboard to track the evolution of the Covid19 contagion in Italy.
+Data is automatically sourced from the official Italian Government Covid Data repository (&lt;a href=&#34;https://github.com/pcm-dpc/COVID-19&#34; class=&#34;uri&#34;&gt;https://github.com/pcm-dpc/COVID-19&lt;/a&gt;) on a daily basis. The data reported in the dashboard is fully dependant on the original source and no additional post-processing is applied to the raw data by the author of the Dashboard.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://davidemagno.com/apps/IrishCovidDashboard/&#34;&gt;Interactive Dashboard on Covid19 data in Ireland&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2020-11-15-shiny-portfolio.en-us_files/IrishCovid.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;An interactive dashboard to track the evolution of the Covid19 contagion in Ireland.
+Data is sourced both from the Irish Government open data website (&lt;a href=&#34;https://data.gov.ie/blog/coronavirus-covid-19&#34; class=&#34;uri&#34;&gt;https://data.gov.ie/blog/coronavirus-covid-19&lt;/a&gt;) and by scraping the epidemiological pdf reports published by the Health Protection Surveillance Centre (&lt;a href=&#34;https://www.hpsc.ie/a-z/respiratory/coronavirus/novelcoronavirus/casesinireland/&#34; class=&#34;uri&#34;&gt;https://www.hpsc.ie/a-z/respiratory/coronavirus/novelcoronavirus/casesinireland/&lt;/a&gt;). The data reported in the dashboard is fully dependant on the original source and no additional post-processing is applied to the raw data by the author of the Dashboard.&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>Multi Currency Swap Pricing with SwapPricer</title>

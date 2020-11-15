@@ -3,6 +3,11 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>/2020/11/shiny-portfolio.en-us/</loc>
+    <lastmod>2020-11-15T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>/2019/09/multicurrency-swap-pricing/</loc>
     <lastmod>2019-09-10T00:00:00+00:00</lastmod>
   </url>
@@ -112,7 +117,7 @@
   
   <url>
     <loc>/post/</loc>
-    <lastmod>2019-09-10T00:00:00+00:00</lastmod>
+    <lastmod>2020-11-15T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -131,6 +136,12 @@
   <url>
     <loc>/tags/rquantlib/</loc>
     <lastmod>2019-04-25T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/tags/shiny/</loc>
+    <lastmod>2020-11-15T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -160,7 +171,7 @@
   
   <url>
     <loc>/</loc>
-    <lastmod>2019-09-10T00:00:00+00:00</lastmod>
+    <lastmod>2020-11-15T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
