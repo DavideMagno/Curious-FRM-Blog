@@ -1,7 +1,7 @@
 ---
 title: Shiny portfolio
 author: Davide Magno
-date: '2020-11-15'
+date: "2023-01-03"
 slug: shiny-portfolio
 categories: []
 tags:
@@ -12,6 +12,15 @@ keywords:
 
 I will use this post as repository of all the publicly available shiny dashboards 
 I have developed through time.
+
+[DTCC Swap Data Dashboard](https://davidemagno.com/apps/DTCCSwapDashboard/)
+
+![](`r here::here("public/post/2020-11-15-shiny-portfolio.en-us_files/ProvaProva.png")`)
+
+
+All the investment banks in the world must submit the information about their trades to a trade repository called DTCC. We use the anonymysed data published by DTCC here (https://pddata.dtcc.com/gtr/cftc/dashboard.do) in a dashboard that tracks the evolution through time of the global investments in "interest rate swaps", a specific type of financial derivative. We report not only the amounts traded, but also the type of swap (OIS or Libor) and the par swap curve each day since the beginning of 2021
+
+
 
 [Online Interest Rate Swap Monitor](https://davidemagno.com/apps/Swap_Rates/)
 
